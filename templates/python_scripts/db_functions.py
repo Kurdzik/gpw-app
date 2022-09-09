@@ -11,7 +11,8 @@ def get_data_from_db(date_from,date_to,ticker):
     month_to = date_to[3:5]
     year_to = date_to[-4:]
 
-    engine = create_engine("mysql+pymysql://test_user:Kolesgit99!@192.168.88.199:3307/GPW?charset=utf8mb4")
+    # engine = create_engine("mysql+pymysql://test_user:Kolesgit99!@192.168.88.199:3307/GPW?charset=utf8mb4")
+    
     conn = engine.connect()
 
 

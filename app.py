@@ -8,7 +8,8 @@ import sqlite3
 download_ready = ''
 approval = False
 conn_string = ''
-
+db_table = ''
+db_schema = ''
 
 app = Flask(__name__,template_folder='./templates',static_folder='./templates/static')
 
@@ -75,6 +76,8 @@ def test_conn():
     database = request.form['DB']
     db_user = request.form['DBUser']
     db_pass = request.form['DBPass']
+    db_table = request.form['Table']
+    db_schema = request.form['Schema']
     add_record_button = ''
     wrong_conn_string = ''
 
@@ -101,15 +104,20 @@ def test_conn():
                                                 message_link=message_link,
                                                 wrong_conn_string=wrong_conn_string,
                                                 add_record_button=add_record_button
-                                                ),approval
+                                                ),approval, db_table, db_schema
 
 
 @app.route('/add_connection',methods=['POST','GET'])
 def add_conn():
 
+    if db_table == '':
+        db_table = 'stocks'
+    
+    if db_schema == '':
+        db_schema = 'public'
     
     conn = sqlite3.connect('templates/static/db_credentials/creds.db')
-    pd.DataFrame([conn_string,'active']).T.rename({0:'connection_string',1:'status'},axis=1).to_sql('connections',if_exists='append',con=conn, index=False)
+    pd.DataFrame([conn_string,db_table,db_schema,'active']).T.rename({0:'connection_string',1:'table',2:'schema',3:'status'},axis=1).to_sql('connections',if_exists='append',con=conn, index=False)
     message = 'Connection Added Successfully'
 
 
