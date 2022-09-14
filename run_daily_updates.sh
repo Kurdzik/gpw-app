@@ -1,2 +1,1 @@
-cd templates/python_scripts/ && python daily_dropdowns_update.py 
-cd templates/python_scripts/ && python daily_upload.py 
+cd /home/projects/templates/python_scripts/ && python3 daily_upload.py && python3 daily_dropdowns_update.py 

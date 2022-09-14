@@ -70,7 +70,7 @@ def get_stock_prices(
 
             if show_progress:
                 print('                                                                                                                                        ',end='\r')
-                print(f'scrapping pages... from {date_from} to {date_to}, selected tickers: {ticker}, progress: {round((dates.index(date)/len(dates))*100,2)}%',end='\r')
+                print(f'scrapping pages... from {str(date_from)[:10]} to {str(date_to)[:10]}, selected tickers: {ticker}, progress: {round((dates.index(date)/len(dates))*100,2)}%',end='\r')
 
             day = f'{get_day(date)}-{get_month(date)}-{get_year(date)}'
 
@@ -112,7 +112,7 @@ def get_stock_prices(
                 all_values = all_values.loc[all_values['Ticker'].str.contains(ticker)]
 
         for float_col in [col for col in all_values.columns.tolist() if col not in ['Date','Currency','Ticker']]:
-            all_values[float_col] = all_values[float_col].str.replace(',','.')
+            all_values[float_col] = all_values[float_col].astype(str).str.replace(',','.')
         
         print(f'done, collected total of {len(all_values)} records                                                                                  ',end='\r')
         all_values.reset_index(inplace=True)

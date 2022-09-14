@@ -35,6 +35,7 @@ with open('../static/dropdown/tickers.csv','w') as file:
 
 # Clear downloads
 path = '../static/downloads/'
-for file in os.listdir(path):
-    os.remove(path + file)
+if len(os.listdir(path))>0:
+    for file in os.listdir(path):
+        os.remove(path + file)
 
