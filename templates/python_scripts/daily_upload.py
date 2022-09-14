@@ -1,11 +1,13 @@
 from gpw_functions import get_stock_prices
 from datetime import date
-import sqlite3
-
 import pandas as pd
 from sqlalchemy import create_engine
 engine = create_engine("postgresql://j341:ED1F_a359b0@psql01.mikr.us:5432/db_j341")
 conn = engine.connect()
+
+from gpw_functions import get_stock_prices
+from datetime import date
+import sqlite3
 
 def day():
     if date.today().day<10:
@@ -32,18 +34,13 @@ stocs_date = f'{day()}-{month()}-{year()}'
 data = get_stock_prices(stocs_date,stocs_date)
 
 # Get all registered connection stirings
-conn_creds = sqlite3.connect('../static/db_credentials/creds.db')
-creds = pd.read_sql('select * from connections', con=conn_creds)
+conn_creds = sqlite3.connect('../static/db_credentials/creds_DB.db')
+creds = pd.read_sql('select * from connected_dbs.connections', con=conn)
 
 # Iterate through conn strings and upload the data
 for conn_string in creds.iterrows():
     try:
-        print('table',conn_string[1][1])
-        print('conn str', conn_string[1][0])
-        print('schema',conn_string[1][2])
-        # data.to_sql(conn_string[1][1],con = conn_string[1][0], schema = conn_string[1][2],if_exists = 'append')
-        # print('Data uploaded succesfully')
+        data.to_sql(conn_string[1][1],con = conn_string[1][0], schema = conn_string[1][2],if_exists = 'append')
     except Exception:
-        # print('Error during data upload')
         continue
     

@@ -2,23 +2,36 @@ import pandas as pd
 from sqlalchemy import create_engine
 
 def get_data_from_db(date_from,date_to,ticker):
-       
-    day_from = date_from[:2]
-    month_from = date_from[3:5]
-    year_from = date_from[-4:]
     
-    day_to = date_to[:2]
-    month_to = date_to[3:5]
-    year_to = date_to[-4:]
+    date_from = str(date_from)
+    date_to = str(date_to)
 
-    # engine = create_engine("mysql+pymysql://test_user:Kolesgit99!@192.168.88.199:3307/GPW?charset=utf8mb4")
+    day_from = date_from[-2:]
+    month_from = date_from[5:7]
+    year_from = date_from[:4]
+    
+    day_to = date_to[-2:]
+    month_to = date_to[5:7]
+    year_to = date_to[:4]
+
+    engine = create_engine("postgresql://j341:ED1F_a359b0@psql01.mikr.us:5432/db_j341")
     
     conn = engine.connect()
 
 
-    q = f"""select * from notowania where Date_new > '{year_from}-{month_from}-{day_from}' and Date_new <= '{year_to}-{month_to}-{day_to}' """
+    # q = f"""select * from gpw.notowania where Date > '{year_from}-{month_from}-{day_from}' and Date <= '{year_to}-{month_to}-{day_to}' """
 
-    df = pd.read_sql(q,con=conn).drop(columns=['level_0','index'])
+    q = f""" SELECT "index", "Ticker", "Currency", "Open", "Max", "Min", "Close", "Volume_in_thousands","Date"
+             FROM gpw.notowania
+             where TO_DATE("Date",'DD-MM-YYYY') >= '{year_from}-{month_from}-{day_from}' and TO_DATE("Date",'DD-MM-YYYY') <= '{year_to}-{month_to}-{day_to}'
+             ORDER BY "Date" ASC ;"""
+    print('-------------------------------------------------------------------------------------------------------------------------------------------------')
+    print(date_to)
+    print(date_from)
+    print(q)
+    print('-------------------------------------------------------------------------------------------------------------------------------------------------')
+
+    df = pd.read_sql(q,con=conn).drop(columns=['index'])
 
 
     if ticker=='ALL':
