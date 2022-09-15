@@ -14,19 +14,20 @@
 
 <body class="bg-black muli">
     <nav class="w-100pc flex flex-column md-flex-row md-px-10 py-5 bg-black">
-        <div>
-            <h5 class="red">Disclaimer: This is for demonstration pourposes only</h5>
-            
+        <!-- <div class="flex justify-between"> -->
+            <!-- <a href="#" class="flex items-center p-2 mr-4 no-underline">
+                <img class="max-h-l2 w-auto" src="static/images/logo.png" />
+            </a> -->
             <!-- <a data-toggle="toggle-nav" data-target="#nav-items" href="#"
                 class="flex items-center ml-auto md-hidden indigo-lighter opacity-50 hover-opacity-100 ease-300 p-1 m-3">
                 <i data-feather="menu"></i>
             </a> -->
-        </div>
+        <!-- </div> -->
         <div id="nav-items" class="hidden flex sm-w-100pc flex-column md-flex md-flex-row md-justify-end items-center">
             <a href="/" class="button bg-white black fw-600 no-underline mx-5">Home</a>
-            <a href="/get_data" class="button bg-white black fw-600 no-underline mx-5">Download raw data</a>
-            <a href="/db_choice" class="button bg-white black fw-600 no-underline mx-5">Connect with Database</a>
             <a href="/analytics" class="button bg-white black fw-600 no-underline mx-5">Analytics</a>
+            <a href="/get_data" class="button bg-white black fw-600 no-underline mx-5">Download raw data</a>
+            
             <!-- <a href="#pricing" class="fs-s1 mx-3 py-3 indigo no-underline hover-underline">Pricing</a>
             <a href="#blog" class="fs-s1 mx-3 py-3 indigo no-underline hover-underline">Blog</a> -->
             <!-- <a href="#" class="button bg-white black fw-600 no-underline mx-5">Register</a> -->
@@ -35,47 +36,40 @@
 
     <!-- hero section -->
     <section id="home" class="min-h-100vh flex justify-start items-center">
-        <div class="mx-5 md-mx-l5">
+        <div>
             <div>
-                <h3 class="white fs-l3 lh-2 md-fs-xl1 md-lh-1 fw-900 ">GPW Stocks Analytics App</h3>
-                              
-            </div>
-            <div>
-                <h1 class="white">Use the navigation menu to get started</h1>
+                <!-- <h1 class="white lh-2 md-lh-1 fw-900 ">Select company ticker, time period and download the data</h1> -->
             </div>
         </div>
-<!-- 
-        <div class="w-100pc md-w-50pc">
+        
+        <div class="w-100pc md-w-50pc flex justify-center">
+            <h1 class="white lh-10 md-lh-1 fw-900 flex justify-center">Do you want to add new or remove existing connection?</h1>
+            <!-- <br>
+            <hr> -->
             <div class="flex justify-center">
                 <div class="w-33pc md-px-10 mb-10">
-                    <h5 class="white">Company</h5>
-
-                    <ul class="list-none mt-2 fs-s2">
-                    
-                        <li class="my-3"><a href="#" class="white opacity-70 no-underline hover-underline">Ticker:</a></li>
-                    
-                                <li class="my-3"><a href="#" class="white opacity-70 no-underline hover-underline">Date From:</a>
-                    
-                        </li>
-                    
-                        <li class="my-3"><a href="#"
-                                class="white opacity-70 no-underline hover-underline">Date To:</a></li>
-                        </li> 
-                    </ul>
-                </div>
-                <div class="w-33pc md-px-10 mb-10">
                     <br>
-                    <form>
-                        <ul class="list-none mt-5 fs-s2">
-                            <li class="my-3"><select id="selectTickers" name="tickerSelection"></select></li>
-                            <li class="my-3"><select id="selectDatesFrom" name="Dates1Selection"></select></li>
-                            <li class="my-3"><select id="selectDatesTo" name="Dates2Selection"></select></li>
-                            <li class="my-3"><input class="btn btn-primary btn-xl" type="submit" Value="Get data">
-                            </li>
-                        </ul>
-                    </form>
+                    
+                    <!-- <h5 class="white">Select company ticker and time period</h5> -->
+                    <!-- <ul class="list-none mt-2 fs-s2"> -->
+                        <!-- <br> -->
+                        <!-- <li><p>.</p></li> -->
+                        <a href="/db_conn" class="button bg-white black fw-500 no-underline mx-5" style="height:50px;width:150px">Add DB Credentials</a>
+                    <!-- </ul> -->
                 </div>
-            </div> -->
+                <div class="w-60pc md-px-10 mb-10">
+                    <br>
+
+                   
+                    <!-- <ul class="list-none mt-5 fs-s2"> -->
+                        <a href="/find_existing_conn" class="button bg-white black fw-500 no-underline mx-5" style="height:50px;width:150px">Remove DB Credentials</a>
+                        
+
+                    <!-- </ul> -->
+                   
+                </div>
+            </div>
+            <!-- <hr> -->
         </div>
     </section>
 
@@ -587,9 +581,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/cferdinandi/smooth-scroll@15.0.0/dist/smooth-scroll.polyfills.min.js"></script>
     <script src="static/scripts/script.js"></script>
-    <script src="static/scripts/dropdown_tickers.js"></script>
-    <script src="static/scripts/dropdown_dat_from.js"></script>
-    <script src="static/scripts/dropdown_dat_to.js"></script>
+    <!-- <script src="static/scripts/dropdown_tickers.js"></script> -->
+    <!-- <script src="static/scripts/dropdown_dat_from.js"></script> -->
+    <!-- <script src="static/scripts/dropdown_dat_to.js"></script>  -->
+    <script src="static/scripts/dropdown_db_type.js"></script>
 </body>
 
 </html>
