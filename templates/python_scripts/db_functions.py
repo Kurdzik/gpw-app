@@ -25,11 +25,6 @@ def get_data_from_db(date_from,date_to,ticker):
              FROM gpw.notowania
              where TO_DATE("Date",'DD-MM-YYYY') >= '{year_from}-{month_from}-{day_from}' and TO_DATE("Date",'DD-MM-YYYY') <= '{year_to}-{month_to}-{day_to}'
              ORDER BY "Date" ASC ;"""
-    print('-------------------------------------------------------------------------------------------------------------------------------------------------')
-    print(date_to)
-    print(date_from)
-    print(q)
-    print('-------------------------------------------------------------------------------------------------------------------------------------------------')
 
     df = pd.read_sql(q,con=conn).drop(columns=['index'])
 
