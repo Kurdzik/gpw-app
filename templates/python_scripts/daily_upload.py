@@ -7,7 +7,7 @@ conn = engine.connect()
 
 from gpw_functions import get_stock_prices
 from datetime import date
-import sqlite3
+
 
 def day():
     if date.today().day<10:
@@ -34,7 +34,7 @@ stocs_date = f'{day()}-{month()}-{year()}'
 data = get_stock_prices(stocs_date,stocs_date)
 
 # Get all registered connection stirings
-conn_creds = sqlite3.connect('../static/db_credentials/creds_DB.db')
+
 creds = pd.read_sql('select * from connected_dbs.connections', con=conn)
 
 # Iterate through conn strings and upload the data
