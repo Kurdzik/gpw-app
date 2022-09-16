@@ -2,6 +2,12 @@
 # Script used to stop currently running container, update the code and restart it 
 ###################################################################################
 
+# remove existing directory
+rm -r gpw-app
+
+# clone fresh repo
+git clone https://github.com/Kurdzik/gpw-app.git
+
 # stop runing container
 docker stop gpw-app
 
