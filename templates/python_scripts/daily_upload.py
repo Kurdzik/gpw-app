@@ -2,7 +2,11 @@ from gpw_functions import get_stock_prices
 from datetime import date
 import pandas as pd
 from sqlalchemy import create_engine
-engine = create_engine("postgresql://j341:ED1F_a359b0@psql01.mikr.us:5432/db_j341")
+import os
+
+conn_string = os.environ['DB_CONN_STRING']
+
+engine = create_engine(conn_string)
 conn = engine.connect()
 
 from gpw_functions import get_stock_prices

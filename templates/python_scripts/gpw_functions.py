@@ -5,8 +5,6 @@ import time
 import datetime as d
 import re
 import numpy as np
-from sklearn.preprocessing import MinMaxScaler
-from sqlalchemy import create_engine
 
 def get_stock_prices(
             date_from,

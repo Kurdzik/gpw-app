@@ -7,6 +7,9 @@ RUN apt install nano
 
 COPY . .
 
+RUN python3 set_environmental_vars.py
+RUN rm set_environmental_vars.py
+
 RUN pip3 install -r requirements.txt
 
 EXPOSE 5000

@@ -2,8 +2,11 @@ from flask import Flask,render_template, request
 from templates.python_scripts.db_functions import get_data_from_db, test_db_conn
 import pandas as pd
 import sqlalchemy
+import os
 
-engine = sqlalchemy.create_engine("postgresql://j341:ED1F_a359b0@psql01.mikr.us:5432/db_j341")
+conn_string = os.environ['DB_CONN_STRING']
+
+engine = sqlalchemy.create_engine(conn_string)
 conn = engine.connect()
 
 download_ready = ''

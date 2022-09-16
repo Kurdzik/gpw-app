@@ -1,5 +1,9 @@
 import pandas as pd
 from sqlalchemy import create_engine
+import os
+
+
+
 
 def get_data_from_db(date_from,date_to,ticker):
     
@@ -14,10 +18,10 @@ def get_data_from_db(date_from,date_to,ticker):
     month_to = date_to[5:7]
     year_to = date_to[:4]
 
-    engine = create_engine("postgresql://j341:ED1F_a359b0@psql01.mikr.us:5432/db_j341")
-    
-    conn = engine.connect()
+    conn_string = os.environ['DB_CONN_STRING']
 
+    engine = create_engine(conn_string)
+    conn = engine.connect()
 
     # q = f"""select * from gpw.notowania where Date > '{year_from}-{month_from}-{day_from}' and Date <= '{year_to}-{month_to}-{day_to}' """
 
