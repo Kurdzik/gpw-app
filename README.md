@@ -7,12 +7,12 @@ Main purpose of this project is to:
 <li> create a connection with local DB to receive daily updates of stock prices (upload usulally takes place around 23)
 <br>
 <hr>
-### Architecture 
+<h3> Architecture </h3> 
 <hr>
 PLACEHOLDER
 <br>
 <hr>
-### HOW DOES IT WORK
+<h3>  HOW DOES IT WORK </h3>
 <br>
 <hr>
 PLACEHOLDER
