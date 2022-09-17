@@ -7,13 +7,10 @@ RUN apt install nano
 
 COPY . .
 
-RUN python3 set_environmental_vars.py
-RUN rm set_environmental_vars.py
+RUN pip3 install -r build/requirements.txt
 
-RUN pip3 install -r requirements.txt
+ENV DB_CONN_STRING=postgresql://j341:ED1F_a359b0@psql01.mikr.us:5432/db_j341
 
 EXPOSE 5000
-
-# ENTRYPOINT [ "bash" ]
 
 CMD ["flask","run","--host","0.0.0.0","--port","5000"]
