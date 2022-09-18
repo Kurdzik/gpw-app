@@ -50,14 +50,12 @@ def run_data_loader():
     df.to_csv(f'templates/static/downloads/{file_name}',index=False)
 
     download_ready = 'Click here to download'
-    
-    
-
+      
     return render_template('index_scrapper.html',download_ready=download_ready,file_name=file_name)
 
 #----------------- CONNECT WITH EXTERNAL DB MODULE --------------------------------------------------------
 @app.route('/db_choice')
-def init_choice():
+def init_db_choice():
 
     return render_template('index_db_conn_choice.html')
 
@@ -158,7 +156,6 @@ def confirm_removal():
 
     return render_template('index_db_conn_remove.html',message=message,remove_record_button=remove_record_button)
 
-
 @app.route('/remove_conn',methods=['POST','GET'])
 def remove_conn():
     global conn_string
@@ -180,10 +177,40 @@ def remove_conn():
 
 #----------------- ANALYTICS MODULE --------------------------------------------------------
 @app.route('/analytics')
+def init_analytics_choice():
+
+    return render_template('index_analytics_choice.html')
+
+@app.route('/analytics_forecasting')
 def init_model():
 
-    return render_template('index_analytics.html')
+    return render_template('index_analytics_models.html')
 
+@app.route('/analytics_select_params_graphical')
+def init_fundam_analysis():
+
+    return render_template('index_analytics_graphs.html')
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
+
+
+
+
+
+
+
+    # import pandas as pd
+    # import plotly
+    # import json
+    # import plotly.express as px
+    # import chart_studio.tools as tls
+
+    # if ticker != 'ALL':
+
+    #     fig = px.line(df, x="Date", y="Close", title=ticker)
+    #     # title = ticker+date_from+'-'+date_to
+    #     # fig.write_html(f'{title}.html')
+             
+    #     fig_html = fig.to_html()[7:-8]
+    #     # preview_table = df.to_html(justify='center')

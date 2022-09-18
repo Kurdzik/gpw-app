@@ -42,67 +42,34 @@
             </div>
         </div>
         
-        <div class="w-100pc md-w-50pc">
-            <h1 class="white lh-2 md-lh-1 fw-900 flex justify-center">Fill below fields in order to receive daily stock prices injections directly to your database</h1>
-            <h3 class="white lh-2 md-lh-1 fw-900 flex justify-center">(make sure that your DB is accessible from web)</h3>
-            <br>
-            <hr>
+        <div class="w-100pc md-w-50pc flex justify-center">
+            <h1 class="white lh-10 md-lh-1 fw-900 flex justify-center">What analytics functions would you like to use</h1>
+            <!-- <br>
+            <hr> -->
             <div class="flex justify-center">
                 <div class="w-33pc md-px-10 mb-10">
+                    <br>
                     
                     <!-- <h5 class="white">Select company ticker and time period</h5> -->
-                    <ul class="list-none mt-2 fs-s2">
+                    <!-- <ul class="list-none mt-2 fs-s2"> -->
                         <!-- <br> -->
-                        <li><p>.</p></li>
-                        <li class="my-3"><a class="white opacity-70 no-underline hover-underline">Database Type:</a></li>
-                        <li class="my-3"><a class="white opacity-70 no-underline hover-underline">Database IP:</a></li>
-                        <li class="my-3"><a class="white opacity-70 no-underline hover-underline">Database Port:</a></li>
-                        <li class="my-3"><a class="white opacity-70 no-underline hover-underline">Database:</a></li>
-                        <li class="my-3"><a class="white opacity-70 no-underline hover-underline">Database User</a></li>
-                        <li class="my-3"><a class="white opacity-70 no-underline hover-underline">Database Password</a></li>
-                        <li class="my-3"><a class="white opacity-70 no-underline hover-underline">Database Table</a></li>
-                        <li class="my-3"><a class="white opacity-70 no-underline hover-underline">Database Schema (if not specified, 'public' is used)</a></li>
-                        <!-- <li class="my-3"><a href="#" class="white opacity-70 no-underline hover-underline">Media</a>
-                        </li> -->
-                    </ul>
+                        <!-- <li><p>.</p></li> -->
+                        <a href="/analytics_forecasting" class="button bg-white black fw-500 no-underline mx-5" style="height:50px;width:150px">Time Series modelling</a>
+                    <!-- </ul> -->
                 </div>
-                <div class="w-33pc md-px-10 mb-10">
-                    <!-- <h5 class="white"></h5> -->
+                <div class="w-60pc md-px-10 mb-10">
                     <br>
 
-                    <form action="connection" method="post">
-                        <ul class="list-none mt-5 fs-s2">
-                            <li class="my-3"><select id="selectDatabases" name="selectDatabases" required></select></li>
-                            <li class="my-3"><input id="DBIP" name="DBIP" required></input></li>
-                            <li class="my-3"><input id="DBPort" name="DBPort" required></input></li>
-                            <li class="my-3"><input id="DB" name="DB" required></input></li>
-                            <li class="my-3"><input id="DBUser" name="DBUser" required></input></li>
-                            <li class="my-3"><input id="DBPass" name="DBPass" required></input></li>
-                            <li class="my-3"><input id="Table" name="Table" required></input></li>
-                            <li class="my-3"><input id="Schema" name="Schema"></input></li>
+                   
+                    <!-- <ul class="list-none mt-5 fs-s2"> -->
+                        <a href="/analytics_select_params_graphical" class="button bg-white black fw-500 no-underline mx-5" style="height:50px;width:150px">Fundamental analysis</a>
+                        
 
-                            <p>.</p>
-                            <li class="my-3"><input class="btn btn-primary btn-xl" type="submit" Value="Test Connection">
-                            <p>.</p>
-                            
-                            </li>
-                            </li>
-                        </ul>
-                    </form>
-                    <li><p class="white">{{ message }}</p></li>
-                    <li><br></li>
-                    <li><p class="white">{{ message_link }}</p></li>
-                    <li><br></li>
-                    <li><p class="white">{{ wrong_conn_string }}</p></li>
-                    <li class="my-3"><a href="/add_connection" class="btn white">{{ add_record_button }}</a>
-
-
-
-
-
+                    <!-- </ul> -->
+                   
                 </div>
             </div>
-            <hr>
+            <!-- <hr> -->
         </div>
     </section>
 

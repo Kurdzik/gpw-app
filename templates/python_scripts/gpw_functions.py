@@ -200,7 +200,11 @@ def get_financial_data(comp):
 
 
 def map_financial_data(df,db_conn):
-
+    """
+    df : pd.DataFrame, returned by get_stock_prices() function
+    db_conn : str, connection string of DB where table 'mapowanie' is located
+    
+    """
     def get_financial_data(comp):
         
         def get_vals(x,sep = 'r/r',sep2 = 'k/k'):
@@ -276,8 +280,8 @@ def map_financial_data(df,db_conn):
         
         return BS, RZiS, CF, market_indicators
 
-    mapping_dict = dict(list(zip(pd.read_sql('select * from mapowanie',con=db_conn,index_col='index')['gpw_name'],\
-                                 pd.read_sql('select * from mapowanie',con=db_conn,index_col='index')['link'])))
+    mapping_dict = dict(list(zip(pd.read_sql('select * from gpw.mapowanie',con=db_conn,index_col='index')['gpw_name'],\
+                                 pd.read_sql('select * from gpw.mapowanie',con=db_conn,index_col='index')['link'])))
 
     BS, RZiS, CF, market_indicators = get_financial_data(mapping_dict[df['Ticker'].tolist()[0]])
 
@@ -323,7 +327,7 @@ def map_financial_data(df,db_conn):
     for col in [float_col for float_col in df.columns.tolist() if float_col not in ['Date','Ticker','Currency','Year']]:
         df[col] = df[col].apply(lambda x: transform_to_float(x))
 
-    df['C/ZO'] = df['Close']/df['Zysk operacyjny na akcję']
+    df['C/ZO'] = "df['Close']/df['Zysk operacyjny na akcję']"
     df['C/WK'] = df['Close']/df['WK']
     df['Cena / WK Grahama'] = df['Close']/(df['Zobowiązania długoterminowe']+df['Zobowiązania krótkoterminowe'])
     df['C/P'] = df['Close']/df['Przychody ze sprzedaży na akcję']
