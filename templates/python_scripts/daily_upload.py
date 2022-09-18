@@ -5,12 +5,8 @@ from sqlalchemy import create_engine
 import os
 
 conn_string = os.environ['DB_CONN_STRING']
-
 engine = create_engine(conn_string)
 conn = engine.connect()
-
-from gpw_functions import get_stock_prices
-from datetime import date
 
 
 def day():
