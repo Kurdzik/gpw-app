@@ -19,12 +19,12 @@ RUN apt-get -y install cron
 # Add execution rights to a script
 # RUN chmod 0644 /root/gpw-app/daily_updates.sh
 
-# RUN crontab -l | { cat; echo "00 23 * * * sh /root/gpw-app/daily_updates.sh"; } | crontab -
+# RUN crontab -l | { cat; echo "00 23 * * * sh daily_updates.sh"; } | crontab -
 
 # Add execution rights to a TEST script
-RUN chmod 0644 /root/gpw-app/test_script.sh
+# RUN chmod 0644 test_script.sh
 
-RUN crontab -l | { cat; echo "* * * * * sh /root/gpw-app/test_script.sh"; } | crontab -
+# RUN crontab -l | { cat; echo "* * * * * sh test_script.sh"; } | crontab -
 
 EXPOSE 5000
 

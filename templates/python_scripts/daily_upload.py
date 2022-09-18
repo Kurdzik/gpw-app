@@ -32,15 +32,16 @@ stocs_date = f'{day()}-{month()}-{year()}'
 
 # Get stock prices for that date
 data = get_stock_prices(stocs_date,stocs_date)
+if len(data)>0:
+    # Get all registered connection stirings
 
-# Get all registered connection stirings
+    creds = pd.read_sql('select * from connected_dbs.connections', con=conn)
 
-creds = pd.read_sql('select * from connected_dbs.connections', con=conn)
-
-# Iterate through conn strings and upload the data
-for conn_string in creds.iterrows():
-    try:
-        data.to_sql(conn_string[1][1],con = conn_string[1][0], schema = conn_string[1][2],if_exists = 'append')
-    except Exception:
-        continue
-    
+    # Iterate through conn strings and upload the data
+    for conn_string in creds.iterrows():
+        try:
+            data.to_sql(conn_string[1][1],con = conn_string[1][0], schema = conn_string[1][2],if_exists = 'append')
+        except Exception:
+            continue
+else: print('No records collected today')
+        
