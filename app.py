@@ -186,10 +186,10 @@ def init_model():
 
     return render_template('index_analytics_models.html')
 
-@app.route('/analytics_select_params_graphical')
+@app.route('/analytics_select_dashboards')
 def init_fundam_analysis():
 
-    return render_template('index_analytics_graphs.html')
+    return render_template('analytics_select_dashboards.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

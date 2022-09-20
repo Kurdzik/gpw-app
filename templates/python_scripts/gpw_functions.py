@@ -5,6 +5,9 @@ import time
 import datetime as d
 import re
 import numpy as np
+import unidecode
+import time
+
 
 def get_stock_prices(
             date_from,
@@ -201,8 +204,16 @@ def get_financial_data(comp):
 
 def map_financial_data(df,db_conn):
     """
-    df : pd.DataFrame, returned by get_stock_prices() function
+    df : pd.DataFrame, in a form:
+    Ticker	|   Currency |  Open        |   Max         |   Min         |	Close       |   Volume_in_thousands     |   Date
+
     db_conn : str, connection string of DB where table 'mapowanie' is located
+
+    returns : 
+              df: for prediction model
+              BS: for bashboards
+              RZiS: for dashboards
+              CF: for dashboards
     
     """
     def get_financial_data(comp):
@@ -236,27 +247,40 @@ def map_financial_data(df,db_conn):
         url_bs = f'https://www.biznesradar.pl/raporty-finansowe-bilans/{comp}'
         url_cf = f'https://www.biznesradar.pl/raporty-finansowe-przeplywy-pieniezne/{comp}'
 
+
+
+
         try:
             RZiS = pd.read_html(url_rzis)[2].rename({'Unnamed: 0': 'Index'},axis=1)
             RZiS = RZiS[[col for col in RZiS.columns if 'Unnamed' not in col]]
+        
         except Exception:
-            RZiS = pd.read_html(url_rzis)[1].rename({'Unnamed: 0': 'Index'},axis=1)
-            RZiS = RZiS[[col for col in RZiS.columns if 'Unnamed' not in col]]
-            
+            try:
+                RZiS = pd.read_html(url_rzis)[1].rename({'Unnamed: 0': 'Index'},axis=1)
+                RZiS = RZiS[[col for col in RZiS.columns if 'Unnamed' not in col]]
+            except Exception:
+                return 'not avaiable'        
+
         try:
             BS = pd.read_html(url_bs)[2].rename({'Unnamed: 0': 'Index'},axis=1)
             BS = BS[[col for col in BS.columns if 'Unnamed' not in col]]
         except Exception:
-            BS = pd.read_html(url_bs)[1].rename({'Unnamed: 0': 'Index'},axis=1)
-            BS = BS[[col for col in BS.columns if 'Unnamed' not in col]]
+            try:
+                BS = pd.read_html(url_bs)[1].rename({'Unnamed: 0': 'Index'},axis=1)
+                BS = BS[[col for col in BS.columns if 'Unnamed' not in col]]
+            except Exception:
+                return 'not avaiable'
+        
         try:
             CF = pd.read_html(url_cf)[1].rename({'Unnamed: 0': 'Index'},axis=1)
             CF = CF[[col for col in CF.columns if 'Unnamed' not in col]]
         except Exception:
-            CF = pd.read_html(url_cf)[0].rename({'Unnamed: 0': 'Index'},axis=1)
-            CF = CF[[col for col in CF.columns if 'Unnamed' not in col]]
-
-
+            try:
+                CF = pd.read_html(url_cf)[0].rename({'Unnamed: 0': 'Index'},axis=1)
+                CF = CF[[col for col in CF.columns if 'Unnamed' not in col]]
+            except Exception:
+                return 'not avaiable'
+       
 
         cols = [col[:4] for col in RZiS.columns.tolist()]
         for rep in [RZiS,BS,CF]:
@@ -285,6 +309,9 @@ def map_financial_data(df,db_conn):
 
     BS, RZiS, CF, market_indicators = get_financial_data(mapping_dict[df['Ticker'].tolist()[0]])
 
+    if BS=='not avaiable' and RZiS=='not avaiable' and CF=='not avaiable':
+        return 'not avaiable','not avaiable','not avaiable','not avaiable'
+
     def quater(x):
         if x[3:5] in ['01','02','03']:
             return '/Q1'
@@ -310,6 +337,12 @@ def map_financial_data(df,db_conn):
         try: return float(x)
         except Exception: return x
 
+    
+    for col in df.columns:
+        try: 
+            df[col] = df[col].apply(unidecode.unidecode).apply(lambda x: x.replace(' ','')).apply(float)
+        except Exception: continue 
+
     df['Year'] = df['Date'].str[-4:] + df['Date'].apply(lambda x : quater(x))
     df['Liczba akcji'] = df['Year'].apply(lambda x : get_data(x,df=market_indicators))
     df['WK'] = df['Year'].apply(lambda x : get_data(x,df=market_indicators,row='Wartość księgowa na akcję'))
@@ -327,7 +360,7 @@ def map_financial_data(df,db_conn):
     for col in [float_col for float_col in df.columns.tolist() if float_col not in ['Date','Ticker','Currency','Year']]:
         df[col] = df[col].apply(lambda x: transform_to_float(x))
 
-    df['C/ZO'] = "df['Close']/df['Zysk operacyjny na akcję']"
+    df['C/ZO'] = df['Close']/df['Zysk operacyjny na akcję']
     df['C/WK'] = df['Close']/df['WK']
     df['Cena / WK Grahama'] = df['Close']/(df['Zobowiązania długoterminowe']+df['Zobowiązania krótkoterminowe'])
     df['C/P'] = df['Close']/df['Przychody ze sprzedaży na akcję']

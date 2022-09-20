@@ -1,1 +1,0 @@
-date >> output_file.txt
