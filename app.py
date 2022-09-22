@@ -189,7 +189,7 @@ def init_model():
 @app.route('/analytics_select_dashboards')
 def init_fundam_analysis():
 
-    return render_template('analytics_select_dashboards.html')
+    return render_template('index_analytics_dashboards.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

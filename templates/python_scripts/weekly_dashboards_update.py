@@ -1,11 +1,11 @@
 import sqlalchemy
 import pandas as pd
 import os
-from .gpw_functions import map_financial_data
+from gpw_functions import map_financial_data
 import time
 import numpy as np
-
-
+import time
+timeout = time.time() + 60*2
 
 conn_string = os.environ['DB_CONN_STRING']
 
@@ -13,36 +13,56 @@ engine = sqlalchemy.create_engine(conn_string)
 conn = engine.connect()
 
 # get all data
-q = f"""select * from gpw.notowania"""
-df = pd.read_sql(q,con=conn)
+q = f"""select distinct * from gpw.notowania """
+df_all = pd.read_sql(q,con=conn)
 
 # get all tickers
-q = f"""select distinct Ticker from gpw.notowania"""
+q = f"""SELECT distinct "Ticker" FROM gpw.notowania order by "Ticker";"""
 tickers = pd.read_sql(q,con=conn)
 
 # upload the data on separate schemas if the data is avaiable
-for ticker in tickers:
-    
-    time.sleep(np.random.randint(5,20))
 
-    df, BS, RZiS, CF = map_financial_data(df.loc[df['Ticker']==ticker],db_conn=conn)
-    
-    if df!='not avaiable':
-        df.to_sql(ticker,schema='predictors',if_exists='replace',con=conn)
-    else:
-        continue
+while True:
 
-    if BS!='not avaiable':
-        BS.to_sql(ticker,schema='BS',if_exists='replace',con=conn)
-    else:
-        continue
-    
-    if RZiS!='not avaiable':
-        RZiS.to_sql(ticker,schema='RZiS',if_exists='replace',con=conn)
-    else:
-        continue
+    for ticker in tickers.values[496:]:
+        time.sleep(np.random.randint(5,7))
+            
+        # because we are working with the list of lists
+        ticker = ticker[0]
 
-    if CF!='not avaiable':
-        CF.to_sql(ticker,schema='CF',if_exists='replace',con=conn)
-    else:
-        continue
+        # check if ticker exists        
+        input_df = df_all.loc[df_all['Ticker']==ticker].copy()
+        print(f'len: {len(input_df)}, ticker: {ticker}')
+ 
+        if len(input_df)<50:
+            print(f'{ticker} not enough data')
+            continue
+        
+        df, BS, RZiS, CF = map_financial_data(df = df_all.loc[df_all['Ticker']==ticker], db_conn = conn)
+            
+        if type(df)!=str:
+            df.to_sql(str(ticker),schema='gpw_predictors',if_exists='replace',con=conn)
+        else:
+            print(f'ignoring {ticker} df')
+            
+        if type(BS)!=str:
+            BS.to_sql(str(ticker),schema='gpw_BS',if_exists='replace',con=conn)
+        else:
+            print(f'ignoring {ticker} BS')
+            
+        if type(RZiS)!=str:
+            RZiS.to_sql(str(ticker),schema='gpw_RZiS',if_exists='replace',con=conn)
+        else:
+            print(f'ignoring {ticker} RZiS')
+            
+        if type(CF)!=str:
+            CF.to_sql(str(ticker),schema='gpw_CF',if_exists='replace',con=conn)
+        else:
+            print(f'ignoring {ticker} CF')
+            continue
+
+        print(f'processed {ticker}')
+
+    break
+
+    
