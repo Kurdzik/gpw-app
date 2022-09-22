@@ -1,3 +1,4 @@
+from unittest import removeResult
 from bs4 import BeautifulSoup
 import pandas as pd
 import requests
@@ -7,7 +8,7 @@ import re
 import numpy as np
 import unidecode
 import time
-from pandas.errors import EmptyDataError
+import requests
 
 def get_stock_prices(
             date_from,
@@ -243,52 +244,91 @@ def map_financial_data(df,db_conn):
                 data = re.split(sep2,x)[0]
                 return data 
 
+        def check_conn(url,_timeout=5):
+            """
+            to check if we qre getting correct response
+            """
+            r = requests.get(url,timeout=_timeout).status_code
+            retries = 0
+
+            while True:
+                
+                if r!=200 and retries<3:
+                    time.sleep(2)
+                    r = requests.get(url,timeout=_timeout).status_code
+                    retries += 1 
+                    print(f'reconnecting..., retries {retries}')
+                    
+                elif r!=200 and retries==3:
+                    print('unable to connect')
+                    return 'not connected'
+
+                else:
+                    print('connected!')
+                    return 'connected'
+
+
+                
+
         url_rzis = f'https://www.biznesradar.pl/raporty-finansowe-rachunek-zyskow-i-strat/{comp}'
         url_bs = f'https://www.biznesradar.pl/raporty-finansowe-bilans/{comp}'
         url_cf = f'https://www.biznesradar.pl/raporty-finansowe-przeplywy-pieniezne/{comp}'
         print(f'links for {comp} collected')
 
-
-
-        try:
-            RZiS = pd.read_html(url_rzis)[2].rename({'Unnamed: 0': 'Index'},axis=1)
-            RZiS = RZiS[[col for col in RZiS.columns if 'Unnamed' not in col]]
-            print(f'RZiS for {comp} collected')
-        
-        except Exception:
+#===================================================================================================================
+        response = check_conn(url_rzis) 
+        if response=='connected':
             try:
-                RZiS = pd.read_html(url_rzis)[1].rename({'Unnamed: 0': 'Index'},axis=1)
+                RZiS = pd.read_html(url_rzis)[2].rename({'Unnamed: 0': 'Index'},axis=1)
                 RZiS = RZiS[[col for col in RZiS.columns if 'Unnamed' not in col]]
                 print(f'RZiS for {comp} collected')
+            
             except Exception:
-                
-                RZiS = 'not avaiable'        
+                try:
+                    RZiS = pd.read_html(url_rzis)[1].rename({'Unnamed: 0': 'Index'},axis=1)
+                    RZiS = RZiS[[col for col in RZiS.columns if 'Unnamed' not in col]]
+                    print(f'RZiS for {comp} collected')
+                except Exception:
+                    RZiS = 'not avaiable'        
+        elif response=='not connected':
+            RZiS = 'not avaiable' 
 
-        try:
-            BS = pd.read_html(url_bs)[2].rename({'Unnamed: 0': 'Index'},axis=1)
-            BS = BS[[col for col in BS.columns if 'Unnamed' not in col]]
-            print(f'BS for {comp} collected')
-        except Exception:
-            try:
-                BS = pd.read_html(url_bs)[1].rename({'Unnamed: 0': 'Index'},axis=1)
+#===================================================================================================================
+        response = check_conn(url_bs)
+        if response=='connected':
+            try: 
+                BS = pd.read_html(url_bs)[2].rename({'Unnamed: 0': 'Index'},axis=1)
                 BS = BS[[col for col in BS.columns if 'Unnamed' not in col]]
                 print(f'BS for {comp} collected')
             except Exception:
-                BS = 'not avaiable'
-        
-        try:
-            CF = pd.read_html(url_cf)[1].rename({'Unnamed: 0': 'Index'},axis=1)
-            CF = CF[[col for col in CF.columns if 'Unnamed' not in col]]
-            print(f'CF for {comp} collected')
-        except Exception:
+                try:
+                    BS = pd.read_html(url_bs)[1].rename({'Unnamed: 0': 'Index'},axis=1)
+                    BS = BS[[col for col in BS.columns if 'Unnamed' not in col]]
+                    print(f'BS for {comp} collected')
+                except Exception:
+                    BS = 'not avaiable'
+
+        elif response=='not connected':
+            BS = 'not avaiable'
+
+#===================================================================================================================
+        response = check_conn(url_cf)
+        if response=='connected':
             try:
-                CF = pd.read_html(url_cf)[0].rename({'Unnamed: 0': 'Index'},axis=1)
+                CF = pd.read_html(url_cf)[1].rename({'Unnamed: 0': 'Index'},axis=1)
                 CF = CF[[col for col in CF.columns if 'Unnamed' not in col]]
                 print(f'CF for {comp} collected')
             except Exception:
-                CF = 'not avaiable'
-       
+                try:
+                    CF = pd.read_html(url_cf)[0].rename({'Unnamed: 0': 'Index'},axis=1)
+                    CF = CF[[col for col in CF.columns if 'Unnamed' not in col]]
+                    print(f'CF for {comp} collected')
+                except Exception:
+                    CF = 'not avaiable'
+        elif response=='not connected':
+            CF = 'not avaiable'
 
+#===================================================================================================================
         if type(BS)==str or type(RZiS)==str or type(CF)==str:
             market_indicators = 'not avaiable'
             return BS, RZiS, CF, market_indicators

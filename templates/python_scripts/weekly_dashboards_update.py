@@ -5,7 +5,7 @@ from gpw_functions import map_financial_data
 import time
 import numpy as np
 import time
-timeout = time.time() + 60*2
+
 
 conn_string = os.environ['DB_CONN_STRING']
 
@@ -22,47 +22,46 @@ tickers = pd.read_sql(q,con=conn)
 
 # upload the data on separate schemas if the data is avaiable
 
-while True:
 
-    for ticker in tickers.values[496:]:
-        time.sleep(np.random.randint(5,7))
-            
-        # because we are working with the list of lists
-        ticker = ticker[0]
-
-        # check if ticker exists        
-        input_df = df_all.loc[df_all['Ticker']==ticker].copy()
-        print(f'len: {len(input_df)}, ticker: {ticker}')
- 
-        if len(input_df)<50:
-            print(f'{ticker} not enough data')
-            continue
+for i,ticker in enumerate(tickers.values):
+    time.sleep(np.random.randint(5,7))
         
-        df, BS, RZiS, CF = map_financial_data(df = df_all.loc[df_all['Ticker']==ticker], db_conn = conn)
-            
-        if type(df)!=str:
-            df.to_sql(str(ticker),schema='gpw_predictors',if_exists='replace',con=conn)
-        else:
-            print(f'ignoring {ticker} df')
-            
-        if type(BS)!=str:
-            BS.to_sql(str(ticker),schema='gpw_BS',if_exists='replace',con=conn)
-        else:
-            print(f'ignoring {ticker} BS')
-            
-        if type(RZiS)!=str:
-            RZiS.to_sql(str(ticker),schema='gpw_RZiS',if_exists='replace',con=conn)
-        else:
-            print(f'ignoring {ticker} RZiS')
-            
-        if type(CF)!=str:
-            CF.to_sql(str(ticker),schema='gpw_CF',if_exists='replace',con=conn)
-        else:
-            print(f'ignoring {ticker} CF')
-            continue
+    # because we are working with the list of lists
+    ticker = ticker[0]
 
-        print(f'processed {ticker}')
+    # check if ticker exists        
+    input_df = df_all.loc[df_all['Ticker']==ticker].copy()
+    print(f'len: {len(input_df)}, ticker: {ticker}, progress: {i+1}/{len(tickers.values)}')
 
-    break
+    if len(input_df)<50:
+        print(f'{ticker} not enough data')
+        continue
+    
+    df, BS, RZiS, CF = map_financial_data(df = df_all.loc[df_all['Ticker']==ticker], db_conn = conn)
+        
+    if type(df)!=str:
+        df.to_sql(str(ticker),schema='gpw_predictors',if_exists='replace',con=conn)
+    else:
+        print(f'ignoring {ticker} df')
+        
+    if type(BS)!=str:
+        BS.to_sql(str(ticker),schema='gpw_BS',if_exists='replace',con=conn)
+    else:
+        print(f'ignoring {ticker} BS')
+        
+    if type(RZiS)!=str:
+        RZiS.to_sql(str(ticker),schema='gpw_RZiS',if_exists='replace',con=conn)
+    else:
+        print(f'ignoring {ticker} RZiS')
+        
+    if type(CF)!=str:
+        CF.to_sql(str(ticker),schema='gpw_CF',if_exists='replace',con=conn)
+    else:
+        print(f'ignoring {ticker} CF')
+        continue
+
+
+    print(f'processed {ticker}')
+
 
     
