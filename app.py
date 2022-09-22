@@ -1,5 +1,7 @@
+from time import time
 from flask import Flask,render_template, request
 from templates.python_scripts.db_functions import get_data_from_db, test_db_conn
+from templates.python_scripts.dashboards_refresh import get_and_plot_data
 import pandas as pd
 import sqlalchemy
 import os
@@ -190,6 +192,18 @@ def init_model():
 def init_fundam_analysis():
 
     return render_template('index_analytics_dashboards.html')
+
+@app.route('/show_dashboards',methods=['POST','GET'])
+def fundam_analysis():
+
+    ticker = request.form['tickerSelectionPreds']
+
+    html_code = get_and_plot_data(ticker=ticker,data_type='html')
+    
+    with open('rendered_dashboards.html','w') as file:
+        file.write(html_code)
+
+    return render_template('rendered_dashboards.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
