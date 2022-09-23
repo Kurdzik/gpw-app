@@ -2,11 +2,15 @@ from plotly.subplots import make_subplots
 import matplotlib.pyplot as plt
 import unidecode
 import plotly.express as px
-import sqlalchemy
+from sqlalchemy import create_engine
 import pandas as pd
+import os
+from .constants import DASHBOARDS_FIRST_PART, DASHBOARDS_LAST_PART
+
 
 from sqlalchemy import create_engine
-engine = create_engine("postgresql://j341:ED1F_a359b0@psql01.mikr.us:5432/db_j341")
+conn_string = os.environ['DB_CONN_STRING']
+engine = create_engine(conn_string)
 conn = engine.connect()
 
 def get_and_plot_data(ticker,data_type = 'plot'):
@@ -127,7 +131,8 @@ def get_and_plot_data(ticker,data_type = 'plot'):
     fig.update_layout(height=3000, width=1500, title_text="Financial data",coloraxis=dict(colorscale='temps_r'))
     
     if data_type == 'html':
-        return fig.to_html()
+        full_html = DASHBOARDS_FIRST_PART + fig.to_html()[55:-15] + DASHBOARDS_LAST_PART
+        return full_html
 
     elif data_type == 'plot':
         return fig.show()

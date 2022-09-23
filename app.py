@@ -198,12 +198,12 @@ def fundam_analysis():
 
     ticker = request.form['tickerSelectionPreds']
 
-    html_code = get_and_plot_data(ticker=ticker,data_type='html')
+    html_div = get_and_plot_data(ticker=ticker,data_type='html')
     
-    with open('templates/rendered_dashboards/dashboards.html','w') as file:
-        file.write(html_code)
+    with open(f'templates/rendered_dashboards/dashboards_{ticker}.html','w') as file:
+        file.write(html_div)
 
-    return render_template('rendered_dashboards/dashboards.html')
+    return render_template(f'rendered_dashboards/dashboards_{ticker}.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
