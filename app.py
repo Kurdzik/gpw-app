@@ -200,31 +200,12 @@ def fundam_analysis():
 
     html_code = get_and_plot_data(ticker=ticker,data_type='html')
     
-    with open('rendered_dashboards.html','w') as file:
+    with open('templates/rendered_dashboards/dashboards.html','w') as file:
         file.write(html_code)
 
-    return render_template('rendered_dashboards.html')
+    return render_template('rendered_dashboards/dashboards.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
 
 
-
-
-
-
-
-    # import pandas as pd
-    # import plotly
-    # import json
-    # import plotly.express as px
-    # import chart_studio.tools as tls
-
-    # if ticker != 'ALL':
-
-    #     fig = px.line(df, x="Date", y="Close", title=ticker)
-    #     # title = ticker+date_from+'-'+date_to
-    #     # fig.write_html(f'{title}.html')
-             
-    #     fig_html = fig.to_html()[7:-8]
-    #     # preview_table = df.to_html(justify='center')
