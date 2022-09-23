@@ -1,3 +1,4 @@
 __pycache__
 templates/python_scripts/__pycache__
-templates/static/downloads/
+templates/static/downloads/*
+templates/rendered_dashboards/*

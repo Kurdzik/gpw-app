@@ -1,0 +1,8 @@
+ARIMA,
+ARIMAX,
+SARIMA,
+SARIMAX,
+XGBoost,
+LSTM Network,
+GRU Network,
+Transformers Network
