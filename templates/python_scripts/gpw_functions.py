@@ -1,3 +1,4 @@
+from unittest import removeResult
 from bs4 import BeautifulSoup
 import pandas as pd
 import requests
@@ -5,6 +6,9 @@ import time
 import datetime as d
 import re
 import numpy as np
+import unidecode
+import time
+import requests
 
 def get_stock_prices(
             date_from,
@@ -200,7 +204,19 @@ def get_financial_data(comp):
 
 
 def map_financial_data(df,db_conn):
+    """
+    df : pd.DataFrame, in a form:
+    Ticker	|   Currency |  Open        |   Max         |   Min         |	Close       |   Volume_in_thousands     |   Date
 
+    db_conn : str, connection string of DB where table 'mapowanie' is located
+
+    returns : 
+              df: for prediction model
+              BS: for bashboards
+              RZiS: for dashboards
+              CF: for dashboards
+    
+    """
     def get_financial_data(comp):
         
         def get_vals(x,sep = 'r/r',sep2 = 'k/k'):
@@ -228,58 +244,149 @@ def map_financial_data(df,db_conn):
                 data = re.split(sep2,x)[0]
                 return data 
 
+        def check_conn(url,_timeout=5):
+            """
+            to check if we qre getting correct response
+            """
+            r = requests.get(url,timeout=_timeout).status_code
+            retries = 0
+
+            while True:
+                
+                if r!=200 and retries<3:
+                    time.sleep(2)
+                    r = requests.get(url,timeout=_timeout).status_code
+                    retries += 1 
+                    print(f'reconnecting..., retries {retries}')
+                    
+                elif r!=200 and retries==3:
+                    print('unable to connect')
+                    return 'not connected'
+
+                else:
+                    print('connected!')
+                    return 'connected'
+
+
+                
+
         url_rzis = f'https://www.biznesradar.pl/raporty-finansowe-rachunek-zyskow-i-strat/{comp}'
         url_bs = f'https://www.biznesradar.pl/raporty-finansowe-bilans/{comp}'
         url_cf = f'https://www.biznesradar.pl/raporty-finansowe-przeplywy-pieniezne/{comp}'
+        print(f'links for {comp} collected')
 
-        try:
-            RZiS = pd.read_html(url_rzis)[2].rename({'Unnamed: 0': 'Index'},axis=1)
-            RZiS = RZiS[[col for col in RZiS.columns if 'Unnamed' not in col]]
-        except Exception:
-            RZiS = pd.read_html(url_rzis)[1].rename({'Unnamed: 0': 'Index'},axis=1)
-            RZiS = RZiS[[col for col in RZiS.columns if 'Unnamed' not in col]]
+#===================================================================================================================
+        response = check_conn(url_rzis) 
+        if response=='connected':
+            try:
+                RZiS = pd.read_html(url_rzis)[2].rename({'Unnamed: 0': 'Index'},axis=1)
+                RZiS = RZiS[[col for col in RZiS.columns if 'Unnamed' not in col]]
+                print(f'RZiS for {comp} collected')
             
-        try:
-            BS = pd.read_html(url_bs)[2].rename({'Unnamed: 0': 'Index'},axis=1)
-            BS = BS[[col for col in BS.columns if 'Unnamed' not in col]]
-        except Exception:
-            BS = pd.read_html(url_bs)[1].rename({'Unnamed: 0': 'Index'},axis=1)
-            BS = BS[[col for col in BS.columns if 'Unnamed' not in col]]
-        try:
-            CF = pd.read_html(url_cf)[1].rename({'Unnamed: 0': 'Index'},axis=1)
-            CF = CF[[col for col in CF.columns if 'Unnamed' not in col]]
-        except Exception:
-            CF = pd.read_html(url_cf)[0].rename({'Unnamed: 0': 'Index'},axis=1)
-            CF = CF[[col for col in CF.columns if 'Unnamed' not in col]]
+            except Exception:
+                try:
+                    RZiS = pd.read_html(url_rzis)[1].rename({'Unnamed: 0': 'Index'},axis=1)
+                    RZiS = RZiS[[col for col in RZiS.columns if 'Unnamed' not in col]]
+                    print(f'RZiS for {comp} collected')
+                except Exception:
+                    RZiS = 'not avaiable'        
+        elif response=='not connected':
+            RZiS = 'not avaiable' 
 
+#===================================================================================================================
+        response = check_conn(url_bs)
+        if response=='connected':
+            try: 
+                BS = pd.read_html(url_bs)[2].rename({'Unnamed: 0': 'Index'},axis=1)
+                BS = BS[[col for col in BS.columns if 'Unnamed' not in col]]
+                print(f'BS for {comp} collected')
+            except Exception:
+                try:
+                    BS = pd.read_html(url_bs)[1].rename({'Unnamed: 0': 'Index'},axis=1)
+                    BS = BS[[col for col in BS.columns if 'Unnamed' not in col]]
+                    print(f'BS for {comp} collected')
+                except Exception:
+                    BS = 'not avaiable'
 
+        elif response=='not connected':
+            BS = 'not avaiable'
 
-        cols = [col[:4] for col in RZiS.columns.tolist()]
-        for rep in [RZiS,BS,CF]:
-            rep.columns = cols
+#===================================================================================================================
+        response = check_conn(url_cf)
+        if response=='connected':
+            try:
+                CF = pd.read_html(url_cf)[1].rename({'Unnamed: 0': 'Index'},axis=1)
+                CF = CF[[col for col in CF.columns if 'Unnamed' not in col]]
+                print(f'CF for {comp} collected')
+            except Exception:
+                try:
+                    CF = pd.read_html(url_cf)[0].rename({'Unnamed: 0': 'Index'},axis=1)
+                    CF = CF[[col for col in CF.columns if 'Unnamed' not in col]]
+                    print(f'CF for {comp} collected')
+                except Exception:
+                    CF = 'not avaiable'
+        elif response=='not connected':
+            CF = 'not avaiable'
 
-        for col in cols:
-            RZiS[col] = RZiS[col].apply(lambda x : get_vals_v2(x))
-            RZiS[col] = RZiS[col].apply(lambda x : get_vals(x))
-            BS[col] = BS[col].apply(lambda x : get_vals_v2(x))
-            BS[col] = BS[col].apply(lambda x : get_vals(x))
-            CF[col] = CF[col].apply(lambda x : get_vals_v2(x))
-            CF[col] = CF[col].apply(lambda x : get_vals(x))
-
-        url_market = f'https://www.biznesradar.pl/wskazniki-wartosci-rynkowej/{comp}'
-        market_indicators = pd.read_html(url_market)[0].rename({'Unnamed: 0': 'Index'},axis=1)
-        market_indicators = market_indicators[[col for col in market_indicators.columns if 'Unnamed' not in col]]
-        market_indicators.columns = [col[:7] for col in market_indicators.columns.tolist()]
-        for col in market_indicators.columns.tolist():
-            market_indicators[col] = market_indicators[col].apply(lambda x : get_vals_v2(x))
-            market_indicators[col] = market_indicators[col].apply(lambda x : get_vals_v2(x,sep='k/k'))
+#===================================================================================================================
+        if type(BS)==str or type(RZiS)==str or type(CF)==str:
+            market_indicators = 'not avaiable'
+            return BS, RZiS, CF, market_indicators
         
-        return BS, RZiS, CF, market_indicators
+        else:        
+            cols = [col[:4] for col in RZiS.columns.tolist()]
+            for rep in [RZiS,BS,CF]:
+                rep.columns = cols
 
-    mapping_dict = dict(list(zip(pd.read_sql('select * from mapowanie',con=db_conn,index_col='index')['gpw_name'],\
-                                 pd.read_sql('select * from mapowanie',con=db_conn,index_col='index')['link'])))
+            for col in cols:
+                RZiS[col] = RZiS[col].apply(lambda x : get_vals_v2(x))
+                RZiS[col] = RZiS[col].apply(lambda x : get_vals(x))
+                BS[col] = BS[col].apply(lambda x : get_vals_v2(x))
+                BS[col] = BS[col].apply(lambda x : get_vals(x))
+                CF[col] = CF[col].apply(lambda x : get_vals_v2(x))
+                CF[col] = CF[col].apply(lambda x : get_vals(x))
+
+            url_market = f'https://www.biznesradar.pl/wskazniki-wartosci-rynkowej/{comp}'
+            market_indicators = pd.read_html(url_market)[0].rename({'Unnamed: 0': 'Index'},axis=1)
+
+            market_indicators = market_indicators[[col for col in market_indicators.columns if 'Unnamed' not in col]]
+            market_indicators.columns = [col[:7] for col in market_indicators.columns.tolist()]
+            for col in market_indicators.columns.tolist():
+                market_indicators[col] = market_indicators[col].apply(lambda x : get_vals_v2(x))
+                market_indicators[col] = market_indicators[col].apply(lambda x : get_vals_v2(x,sep='k/k'))
+            
+            return BS, RZiS, CF, market_indicators
+
+    mapping_dict = dict(list(zip(pd.read_sql('select * from gpw.mapowanie',con=db_conn,index_col='index')['gpw_name'],\
+                                    pd.read_sql('select * from gpw.mapowanie',con=db_conn,index_col='index')['link'])))
+
+    # check if company is present in our mapping dict
+
+    try:
+        mapping_dict[df['Ticker'].tolist()[0]]
+        comp = mapping_dict[df['Ticker'].tolist()[0]]
+    
+    except KeyError:
+        # adding missing ticker to tickers list
+         
+        # if file exists     
+        # try:
+        #     missing_data = list(pd.read_csv('missing_companies.csv'))           
+        #     missing_data.append(df['Ticker'].tolist()[0])
+        #     pd.DataFrame(missing_data).to_csv('missing_companies.csv')
+        # # if not
+        # except EmptyDataError:
+        #     missing_data = []
+        #     missing_data.append(df['Ticker'].tolist()[0])
+        #     pd.DataFrame(missing_data).to_csv('missing_companies.csv')
+
+        return 'not avaiable','not avaiable','not avaiable','not avaiable'
+
 
     BS, RZiS, CF, market_indicators = get_financial_data(mapping_dict[df['Ticker'].tolist()[0]])
+
+    if type(BS)==str and type(RZiS)==str and type(CF)==str:
+        return 'not avaiable','not avaiable','not avaiable','not avaiable'
 
     def quater(x):
         if x[3:5] in ['01','02','03']:
@@ -306,34 +413,48 @@ def map_financial_data(df,db_conn):
         try: return float(x)
         except Exception: return x
 
-    df['Year'] = df['Date'].str[-4:] + df['Date'].apply(lambda x : quater(x))
-    df['Liczba akcji'] = df['Year'].apply(lambda x : get_data(x,df=market_indicators))
-    df['WK'] = df['Year'].apply(lambda x : get_data(x,df=market_indicators,row='Wartość księgowa na akcję'))
-    df['Aktywa obrotowe'] = df['Year'].apply(lambda x : get_data(x[:4],df=BS,col_with_rownames='Inde',row='Aktywa obrotowe'))
-    df['Zobowiązania długoterminowe'] = df['Year'].apply(lambda x : get_data(x[:4],df=BS,col_with_rownames='Inde',row='Zobowiązania długoterminowe'))
-    df['Zobowiązania krótkoterminowe'] = df['Year'].apply(lambda x : get_data(x[:4],df=BS,col_with_rownames='Inde',row='Zobowiązania krótkoterminowe'))
-    df['Przychody ze sprzedaży na akcję'] = df['Year'].apply(lambda x : get_data(x,df=market_indicators,row='Przychody ze sprzedaży na akcję'))
-    df['Zysk na akcję'] = df['Year'].apply(lambda x : get_data(x,df=market_indicators,row='Zysk na akcję'))
-    df['Zysk operacyjny na akcję'] = df['Year'].apply(lambda x : get_data(x,df=market_indicators,row='Zysk operacyjny na akcję'))
-    df['Enterprise Value na akcję'] = df['Year'].apply(lambda x : get_data(x,df=market_indicators,row='Enterprise Value na akcję'))
-    df['EV / P'] = df['Year'].apply(lambda x : get_data(x,df=market_indicators,row='EV / Przychody ze sprzedaży'))
-    df['EV / EBIT'] = df['Year'].apply(lambda x : get_data(x,df=market_indicators,row='EV / EBIT'))
-    df['EV / EBITDA'] = df['Year'].apply(lambda x : get_data(x,df=market_indicators,row='EV / EBITDA'))
 
-    for col in [float_col for float_col in df.columns.tolist() if float_col not in ['Date','Ticker','Currency','Year']]:
-        df[col] = df[col].apply(lambda x: transform_to_float(x))
+    if type(RZiS)!=str:
+        for col in df.columns:
+            try: 
+                df[col] = df[col].apply(unidecode.unidecode).apply(lambda x: x.replace(' ','')).apply(float)
+            except Exception: continue 
+    
+    try:
+        df['Year'] = df['Date'].str[-4:] + df['Date'].apply(lambda x : quater(x))
+        df['Liczba akcji'] = df['Year'].apply(lambda x : get_data(x,df=market_indicators))
+        df['WK'] = df['Year'].apply(lambda x : get_data(x,df=market_indicators,row='Wartość księgowa na akcję'))
+        df['Aktywa obrotowe'] = df['Year'].apply(lambda x : get_data(x[:4],df=BS,col_with_rownames='Inde',row='Aktywa obrotowe'))
+        df['Zobowiązania długoterminowe'] = df['Year'].apply(lambda x : get_data(x[:4],df=BS,col_with_rownames='Inde',row='Zobowiązania długoterminowe'))
+        df['Zobowiązania krótkoterminowe'] = df['Year'].apply(lambda x : get_data(x[:4],df=BS,col_with_rownames='Inde',row='Zobowiązania krótkoterminowe'))
+        df['Przychody ze sprzedaży na akcję'] = df['Year'].apply(lambda x : get_data(x,df=market_indicators,row='Przychody ze sprzedaży na akcję'))
+        df['Zysk na akcję'] = df['Year'].apply(lambda x : get_data(x,df=market_indicators,row='Zysk na akcję'))
+        df['Zysk operacyjny na akcję'] = df['Year'].apply(lambda x : get_data(x,df=market_indicators,row='Zysk operacyjny na akcję'))
+        df['Enterprise Value na akcję'] = df['Year'].apply(lambda x : get_data(x,df=market_indicators,row='Enterprise Value na akcję'))
+        df['EV / P'] = df['Year'].apply(lambda x : get_data(x,df=market_indicators,row='EV / Przychody ze sprzedaży'))
+        df['EV / EBIT'] = df['Year'].apply(lambda x : get_data(x,df=market_indicators,row='EV / EBIT'))
+        df['EV / EBITDA'] = df['Year'].apply(lambda x : get_data(x,df=market_indicators,row='EV / EBITDA'))
 
-    df['C/ZO'] = df['Close']/df['Zysk operacyjny na akcję']
-    df['C/WK'] = df['Close']/df['WK']
-    df['Cena / WK Grahama'] = df['Close']/(df['Zobowiązania długoterminowe']+df['Zobowiązania krótkoterminowe'])
-    df['C/P'] = df['Close']/df['Przychody ze sprzedaży na akcję']
-    df['C/Z'] = df['Close']/df['Zysk na akcję']
-    df['Close_pct'] = df['Close'].pct_change().mul(100)
-    df['Open_pct'] = df['Open'].pct_change().mul(100)
-    df['Max_pct'] = df['Max'].pct_change().mul(100)
-    df['Min_pct'] = df['Min'].pct_change().mul(100)
+        for col in [float_col for float_col in df.columns.tolist() if float_col not in ['Date','Ticker','Currency','Year']]:
+            df[col] = df[col].apply(lambda x: transform_to_float(x))
+
+        df['C/ZO'] = df['Close']/df['Zysk operacyjny na akcję']
+        df['C/WK'] = df['Close']/df['WK']
+        df['Cena / WK Grahama'] = df['Close']/(df['Zobowiązania długoterminowe']+df['Zobowiązania krótkoterminowe'])
+        df['C/P'] = df['Close']/df['Przychody ze sprzedaży na akcję']
+        df['C/Z'] = df['Close']/df['Zysk na akcję']
+        df['Close_pct'] = df['Close'].pct_change().mul(100)
+        df['Open_pct'] = df['Open'].pct_change().mul(100)
+        df['Max_pct'] = df['Max'].pct_change().mul(100)
+        df['Min_pct'] = df['Min'].pct_change().mul(100)
+        
+        print(f'df for {comp} collected')
+
+    except Exception:
+        df = 'not avaiable'
     
     return df, BS, RZiS, CF
+    
 
 
 

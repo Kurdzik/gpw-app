@@ -1,5 +1,7 @@
+from time import time
 from flask import Flask,render_template, request
 from templates.python_scripts.db_functions import get_data_from_db, test_db_conn
+from templates.python_scripts.dashboards_refresh import get_and_plot_data
 import pandas as pd
 import sqlalchemy
 import os
@@ -50,14 +52,12 @@ def run_data_loader():
     df.to_csv(f'templates/static/downloads/{file_name}',index=False)
 
     download_ready = 'Click here to download'
-    
-    
-
+      
     return render_template('index_scrapper.html',download_ready=download_ready,file_name=file_name)
 
 #----------------- CONNECT WITH EXTERNAL DB MODULE --------------------------------------------------------
 @app.route('/db_choice')
-def init_choice():
+def init_db_choice():
 
     return render_template('index_db_conn_choice.html')
 
@@ -158,7 +158,6 @@ def confirm_removal():
 
     return render_template('index_db_conn_remove.html',message=message,remove_record_button=remove_record_button)
 
-
 @app.route('/remove_conn',methods=['POST','GET'])
 def remove_conn():
     global conn_string
@@ -180,10 +179,33 @@ def remove_conn():
 
 #----------------- ANALYTICS MODULE --------------------------------------------------------
 @app.route('/analytics')
+def init_analytics_choice():
+
+    return render_template('index_analytics_choice.html')
+
+@app.route('/analytics_forecasting')
 def init_model():
 
-    return render_template('index_analytics.html')
+    return render_template('index_analytics_models.html')
 
+@app.route('/analytics_select_dashboards')
+def init_fundam_analysis():
+
+    return render_template('index_analytics_dashboards.html')
+
+@app.route('/show_dashboards',methods=['POST','GET'])
+def fundam_analysis():
+
+    ticker = request.form['tickerSelectionPreds']
+
+    html_div = get_and_plot_data(ticker=ticker,data_type='html')
+    
+    with open(f'templates/rendered_dashboards/dashboards_{ticker}.html','w') as file:
+        file.write(html_div)
+
+    return render_template(f'rendered_dashboards/dashboards_{ticker}.html')
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
+
+
