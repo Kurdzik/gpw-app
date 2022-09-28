@@ -11,7 +11,7 @@ DASHBOARDS_FIRST_PART = """<!DOCTYPE html>
       integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="/static/css/cover.css" />
+    <link rel="stylesheet" href="static/css/cover.css" />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Muli:200,300,400,500,600,700,800,900&display=swap"
@@ -19,7 +19,7 @@ DASHBOARDS_FIRST_PART = """<!DOCTYPE html>
   </head>
 
   <body class="d-flex h-100 text-center text-bg-dark">
-    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <div class="d-flex w-100 h-100 p-3 mx-auto flex-column">
       <header class="mb-auto">
         <nav
           class="navbar navbar-expand-lg navbar-dark nav-masthead justify-content-center"

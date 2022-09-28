@@ -82,5 +82,19 @@ body.h-100 {
 }
 
 .cover-container {
-  height: 100vh;
+  height: 100%;
+}
+
+.main-svg {
+  width: 100%;
+}
+
+.js-plotly-plot {
+  margin: 0 auto;
+  overflow: scroll;
+  width: 100%;
+}
+
+.h-100 {
+  height: fit-content !important;
 }
