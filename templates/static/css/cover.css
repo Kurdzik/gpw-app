@@ -91,8 +91,12 @@ body.h-100 {
 
 .js-plotly-plot {
   margin: 0 auto;
-  overflow: scroll;
+  overflow-y: scroll; /* Show vertical scrollbar */
+  overflow-x: scroll; /* Show horizontal scrollbar */
   width: 100%;
+  max-width: 1600px;
+  height: 650px;
+  border: 1px solid #bebebe;
 }
 
 .h-100 {
