@@ -11,7 +11,7 @@
       integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="/static/css/cover.css" />
+    <link rel="stylesheet" href="static/css/cover.css" />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Muli:200,300,400,500,600,700,800,900&display=swap"
@@ -72,7 +72,7 @@
           Fill below fields in order to receive daily stock prices injections
           directly to your database
         </h1>
-        <h3>(make sure that your DB is accessible from web)</h3>
+        <h5>(make sure that your DB is accessible from web)</h5>
         <form
           action="connection"
           method="post"
@@ -157,14 +157,10 @@
             value="Test Connection"
           />
         </form>
-        <div class="alert alert-primary" role="alert">{{ message }}</div>
-        <div class="alert alert-success" role="alert">{{ message_link }}</div>
-        <div class="alert alert-danger" role="alert">
-          {{ wrong_conn_string }}
-        </div>
-        <a href="/add_connection" class="btn btn-success btn-lg mb-5"
-          >{{ remove_record_button }}</a
-        >
+        <p>{{ message }}</p>
+        <p>{{ message_link }}</p>
+        <p>{{ wrong_conn_string }}</p>
+        <p><a href="/add_connection">{{ remove_record_button }}</a></p>  
       </main>
       <footer class="mt-auto text-white-50">
         <p>
