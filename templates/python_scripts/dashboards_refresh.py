@@ -128,7 +128,7 @@ def get_and_plot_data(ticker,data_type = 'plot'):
     for i,fig_ in enumerate(fig_list):
         fig.add_trace(fig_, row=i + 1, col=1)
 
-    fig.update_layout(height=3000, width=1500, title_text="Financial data",coloraxis=dict(colorscale='temps_r'),paper_bgcolor="rgb(0,0,0,0)",font=dict(color="white"))
+    fig.update_layout(height=3000, width=1200, title_text="Financial data",coloraxis=dict(colorscale='temps_r'),paper_bgcolor="rgb(0,0,0,0)",font=dict(color="white"))
     
     if data_type == 'html':
         full_html = DASHBOARDS_FIRST_PART + fig.to_html()[55:-15] + DASHBOARDS_LAST_PART

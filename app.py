@@ -144,16 +144,16 @@ def confirm_removal():
                                                                 db_user=db_user,
                                                                 db_pass=db_pass)
     
-    # conn = sqlite3.connect('templates/static/db_credentials/creds.db')
+    
     q = 'select * from connected_dbs.connections'
     df = pd.read_sql(q,conn)
 
     if len(df.loc[df.connection_string==conn_string])==0:
         message = 'Connection not in a database'
+        remove_record_button = ''
     else:
         message = 'Connection found!'
-    
-    remove_record_button = 'Click here to remove your Database from registry'
+        remove_record_button = 'Click here to remove your Database from registry'
 
 
     return render_template('index_db_conn_remove.html',message=message,remove_record_button=remove_record_button)

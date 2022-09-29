@@ -138,19 +138,19 @@
             value="Search for connection"
           />
         </form> 
-        {% if {{ message }} == true %}
+        
         <p>{{ message }}</p>
-        {% endif %} {% if {{ message_link }} == true %}
+        
         <p>{{ message_link }}</p>
-        {% endif %} {% if {{ wrong_conn_string }} == true %}
+        
         <p>{{ wrong_conn_string }}</p>
-        {% endif %} {% if {{ remove_record_button }} == true %}
-        <p>
-          <a href="/remove_conn" class="btn btn-success btn-lg mb-5">
+        
+        
+          <a href="/remove_conn">
             {{ remove_record_button }}</a
           >
-        </p>
-        {% endif %} 
+        
+        
       </main>
       <footer class="mt-auto text-white-50">
         <p>
