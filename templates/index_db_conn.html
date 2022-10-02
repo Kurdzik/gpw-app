@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GPW Analytics</title>
-    
+
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -158,11 +158,13 @@
           />
         </form>
         <p>{{ message }}</p>
-        <br>
+        <br />
         <p>{{ message_link }}</p>
-        
+
         <p>{{ wrong_conn_string }}</p>
-        <a href="/add_connection">{{ add_record_button }}</a>
+        <a class="btn btn-outline-success my-4" href="/add_connection"
+          >{{ add_record_button }}</a
+        >
       </main>
       <footer class="mt-auto text-white-50">
         <p>
