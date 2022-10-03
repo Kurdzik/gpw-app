@@ -153,7 +153,7 @@ def confirm_removal():
         remove_record_button = ''
     else:
         message = 'Connection found!'
-        remove_record_button = 'Click here to remove your Database from registry'
+        remove_record_button = 'Click here to remove your Database credentials from registry'
 
 
     return render_template('index_db_conn_remove.html',message=message,remove_record_button=remove_record_button)
