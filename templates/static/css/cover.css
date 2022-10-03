@@ -99,6 +99,8 @@ body.h-100 {
   border: 1px solid #bebebe;
 }
 
-.h-100 {
-  height: fit-content !important;
+@media (max-width: 1300px) {
+  .js-plotly-plot {
+    width: 100% !important;
+  }
 }

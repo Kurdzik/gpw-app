@@ -16,6 +16,12 @@ DASHBOARDS_FIRST_PART = """<!DOCTYPE html>
       rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Muli:200,300,400,500,600,700,800,900&display=swap"
     />
+
+    <style> 
+    .h-100 {
+      height: fit-content !important;
+    } 
+    </style>
   </head>
 
   <body class="d-flex h-100 text-center text-bg-dark">
