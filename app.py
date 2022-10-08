@@ -200,10 +200,10 @@ def fundam_analysis():
 
     html_div = get_and_plot_data(ticker=ticker,data_type='html')
     
-    with open(f'templates/rendered_dashboards/dashboards_{ticker}.html','w') as file:
+    with open(f'templates/rendered_dashboards/dashboards_temp_{ticker}.html','w') as file:
         file.write(html_div)
 
-    return render_template(f'rendered_dashboards/dashboards_{ticker}.html')
+    return render_template(f'rendered_dashboards/dashboards_temp_{ticker}.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
