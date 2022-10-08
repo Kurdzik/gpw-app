@@ -17,7 +17,7 @@ conn_string = ''
 db_table = ''
 db_schema = ''
 
-app = Flask(__name__,template_folder='/templates',static_folder='/templates/static')
+app = Flask(__name__,template_folder='./templates',static_folder='./templates/static')
 
 #----------------- HOME PAGE -------------------------------------------------------------------------------
 @app.route('/')

@@ -1,3 +1,3 @@
 *__pycache__
-templates/rendered_dashboards/*
+*dashboards_*
 *.DS_Store
