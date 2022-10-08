@@ -77,48 +77,48 @@ def get_and_plot_data(ticker,data_type = 'plot'):
     #======== Profitability ================================================================================================================================================================================================
     # Graph 1 - (sales revenue) Przychody ze sprzedaży vs (COGS) Techniczny koszt wytworzenia produkcji sprzedanej + Koszty sprzedaży + Koszty ogólnego zarządu
     try: fig1 = px.bar(data_frame=df_rzis.rename({'Przychody ze sprzedaży':'Sales Revenue','Zysk netto':'Net Profit'},axis=1)
-                        ,y='Sales Revenue',x='index').data[0]
+                        ,y='Sales Revenue',x='index',text_auto=True).data[0]
     except Exception: fig1 = px.bar(x=[0],y=[0]).data[0]
 
     # Graph 2 - (net profit) Zysk netto
     try: fig2 = px.bar(data_frame=df_rzis.rename({'Przychody ze sprzedaży':'Sales Revenue','Zysk netto':'Net Profit'},axis=1)
-                        ,y='Net Profit',x='index',color='Net Profit').data[0]
+                        ,y='Net Profit',x='index',color='Net Profit',text_auto=True).data[0]
     except Exception: fig2 = px.bar(x=[0],y=[0]).data[0]
 
     #======== Liquidity ====================================================================================================================================================================================================
     # Graph 3 - (cash flow from operations) Przepływy pieniężne z działalności operacyjnej
     try: fig3 = px.bar(data_frame=df_cf.rename({'Przepływy pieniężne z działalności operacyjnej':'CF from operations','Przepływy pieniężne razem':'Total CF'},axis=1)
-                        ,y='CF from operations',x='index',color='CF from operations').data[0]
+                        ,y='CF from operations',x='index',color='CF from operations',text_auto=True).data[0]
     except Exception: fig3 = px.bar(x=[0],y=[0]).data[0]
 
     # Graph 4 - (total cash flow) Przepływy pieniężne razem
     try: fig4 = px.bar(data_frame=df_cf.rename({'Przepływy pieniężne z działalności operacyjnej':'CF from operations','Przepływy pieniężne razem':'Total CF'},axis=1)
-                        ,y='Total CF',x='index',color='Total CF').data[0]
+                        ,y='Total CF',x='index',color='Total CF',text_auto=True).data[0]
     except Exception: fig4 = px.bar(x=[0],y=[0]).data[0]
 
     #======== Balance Sheet ================================================================================================================================================================================================
     # Graph 5 - (total assets) Aktywa razem
     try: fig5 = px.bar(data_frame=df_bs.rename({'Aktywa razem':'Total assets'},axis=1),
-                        y='Total assets',x='index').data[0]
+                        y='Total assets',x='index',text_auto=True).data[0]
     except Exception: fig5 = px.bar(x=[0],y=[0]).data[0]
 
     # Graph 6 - (total liabilities) Aktywa razem - Kapitał własny akcjonariuszy jednostki dominującej - Kapitał (fundusz) podstawowy - Udziały (akcje) własne - Kapitał (fundusz) zapasowy - Udziały niekontrolujące
-    try: fig6 = px.bar(data_frame=df_bs,y='Total liabilities',x='index').data[0]
+    try: fig6 = px.bar(data_frame=df_bs,y='Total liabilities',x='index',text_auto=True).data[0]
     except Exception: fig6 = px.bar(x=[0],y=[0]).data[0]
 
     #======== Indicators ===================================================================================================================================================================================================
     # Graph 7 - (P/E) C/Z
     try: fig7 = px.line(data_frame=df_pred.rename({'C/Z':'P/E'},axis=1)
-                        ,y='P/E',x='Date').data[0]
+                        ,y='P/E',x='Date',text_auto=True).data[0]
     except Exception: fig7 = px.bar(x=[0],y=[0]).data[0]
 
     # Graph 8 - (P/BW) C/WK
     try: fig8 = px.line(data_frame=df_pred.rename({'C/WK':'P/BV'},axis=1)
-                        ,y='P/BV',x='Date').data[0]
+                        ,y='P/BV',x='Date',text_auto=True).data[0]
     except Exception: fig8 = px.bar(x=[0],y=[0]).data[0]
 
     # Graph 9 - (EV/EBITDA) EV/EBITDA
-    try: fig9 = px.line(data_frame=df_pred,y='EV / EBITDA',x='Date').data[0]
+    try: fig9 = px.line(data_frame=df_pred,y='EV / EBITDA',x='Date',text_auto=True).data[0]
     except Exception: fig9 = px.bar(x=[0],y=[0]).data[0]
 
     #======== Figures =====================================================================================================================================================================================================
@@ -128,7 +128,7 @@ def get_and_plot_data(ticker,data_type = 'plot'):
     for i,fig_ in enumerate(fig_list):
         fig.add_trace(fig_, row=i + 1, col=1)
 
-    fig.update_layout(height=3000, width=1200, title_text="Financial data",coloraxis=dict(colorscale='temps_r'),paper_bgcolor="rgb(0,0,0,0)",font=dict(color="white"))
+    fig.update_layout(height=3000, width=1200, title_text="Financial data in PLN",coloraxis=dict(colorscale='temps_r'),paper_bgcolor="rgb(0,0,0,0)",font=dict(color="white"))
     
     if data_type == 'html':
         full_html = DASHBOARDS_FIRST_PART + fig.to_html()[55:-15] + DASHBOARDS_LAST_PART
