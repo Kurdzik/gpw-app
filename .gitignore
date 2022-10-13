@@ -3,3 +3,4 @@
 *predictions_temp_*
 *.DS_Store
 *Dockerfile
+*.ipynb_checkpoints
