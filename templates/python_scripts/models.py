@@ -13,7 +13,6 @@ conn = engine.connect()
 def predict_and_plot(forecst_periods,forecast_from,plot_last_mnths,model,ticker,data_type='plot'):
 
     # Get data
-    
     q_2 = f'''SELECT * FROM gpw_predictors."{ticker}"
     order by to_date("Date",'dd-mm-yyyy');'''
 
@@ -27,8 +26,6 @@ def predict_and_plot(forecst_periods,forecast_from,plot_last_mnths,model,ticker,
     df = df.drop(columns=['level_0','index','Ticker','Currency','Open','Max','Min','Year'])
     df['Date'] = pd.to_datetime(df['Date'],dayfirst=True)
     df = df.set_index('Date')
-
-
 
     # Dataset parameters
     plot_data_since = pd.date_range(end=forecast_from,periods=plot_last_mnths,freq='M')[0].date()
