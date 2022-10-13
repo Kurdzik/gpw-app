@@ -67,7 +67,7 @@
         </nav>
       </header>
       <main class="px-3">
-        <h1>Select Ticker, Period and Model</h1>
+        <h1>Select Company, Period for prediction and Model</h1>
         <form
           action="make_prediction"
           method="post"
@@ -76,7 +76,7 @@
           <div class="input-group mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text" for="selectTickersPreds"
-                >Ticker:</label
+                >Company:</label
               >
             </div>
             <select
@@ -97,6 +97,7 @@
               class="custom-select"
             ></select>
           </div>
+
           <div class="input-group mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text" for="fcstPeriod"
@@ -111,9 +112,27 @@
               name="fcstPeriodName"
               maxlength="2"
               size="6"
+              required
             />
           </div>
           <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="pltPeriod"
+                >How many historical months to plot:</label
+              >
+            </div>
+            <input
+              type="number"
+              type="number"
+              min="3"
+              id="pltPeriod"
+              name="pltPeriodName"
+              maxlength="2"
+              size="6"
+              required
+            />
+          </div>
+          <!-- <div class="input-group mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text" for="plotFcst"
                 >Plot historical data?</label
@@ -125,7 +144,7 @@
               name="plotFcstName"
               value="plotTrue"
             />
-          </div>
+          </div> -->
           <div class="input-group mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text" for="selectModel"
@@ -138,23 +157,24 @@
               class="custom-select"
             ></select>
           </div>
-          <div class="input-group mb-3">
+          
+          <!-- <div class="input-group mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text" for="MACD"
                 >Add MACD indicator?</label
               >
             </div>
             <input type="checkbox" id="MACD" name="MACDBox" value="MACDTrue" />
-          </div>
-          <div class="input-group mb-3">
+          </div> -->
+          <!-- <div class="input-group mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text" for="EAvg"
                 >Add EMA indicator?</label
               >
             </div>
             <input type="checkbox" id="EAvg" name="EAvgBox" value="EATrue" />
-          </div>
-          <div class="input-group mb-3">
+          </div> -->
+          <!-- <div class="input-group mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text" for="BB"
                 >Add Boillinger Bands indicators?</label
@@ -169,13 +189,15 @@
               >
             </div>
             <input type="checkbox" id="SD" name="SDBox" value="SDTrue" />
-          </div>
+          </div> -->
           <input
             class="btn btn-success btn-lg mt-4 mx-auto d-block"
             type="submit"
             value="Make Prediction"
           />
         </form>
+        <hr>
+        
       </main>
       <footer class="mt-auto text-white-50">
         <p>

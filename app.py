@@ -2,9 +2,11 @@ from time import time
 from flask import Flask,render_template, request
 from templates.python_scripts.db_functions import get_data_from_db, test_db_conn
 from templates.python_scripts.dashboards_refresh import get_and_plot_data
+from templates.python_scripts.models import predict_and_plot
 import pandas as pd
 import sqlalchemy
 import os
+
 
 conn_string = os.environ['DB_CONN_STRING']
 
@@ -183,11 +185,7 @@ def init_analytics_choice():
 
     return render_template('index_analytics_choice.html')
 
-@app.route('/analytics_forecasting')
-def init_model():
-
-    return render_template('index_analytics_models.html')
-
+#----------------- ANALYTICS MODULE - DASHBOARDS -------------------------------------------
 @app.route('/analytics_select_dashboards')
 def init_fundam_analysis():
 
@@ -204,6 +202,36 @@ def fundam_analysis():
         file.write(html_div)
 
     return render_template(f'rendered_dashboards/dashboards_temp_{ticker}.html')
+
+#----------------- ANALYTICS MODULE - FORECASTING ------------------------------------------
+@app.route('/analytics_forecasting')
+def init_model():
+
+    return render_template('index_analytics_models.html')
+
+@app.route('/make_prediction',methods=['POST','GET'])
+def run_model():
+    ticker = request.form['tickerSelectionPreds']
+
+    ticker = request.form['tickerSelectionPreds']
+    forecast_from = request.form['Dates1Selection']
+    forecst_periods = int(request.form['fcstPeriodName'])
+    plot_last_mnths = int(request.form['pltPeriodName'])
+    model = request.form['ModelSelection']
+    
+
+    html_div = predict_and_plot(
+                                forecst_periods=forecst_periods,
+                                forecast_from=forecast_from,
+                                plot_last_mnths=plot_last_mnths,
+                                model=model,
+                                ticker=ticker,
+                                data_type='html')
+
+    with open(f'templates/rendered_predictions/predictions_temp_{ticker}.html','w') as file:
+        file.write(html_div)
+
+    return render_template(f'rendered_predictions/predictions_temp_{ticker}.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

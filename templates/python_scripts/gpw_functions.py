@@ -461,31 +461,63 @@ def map_financial_data(df,db_conn):
 
 
 
-def train_test_split(X,Y,train_size=0.8,return_shape='3D'):
+def train_test_split(X,
+                    Y=None,
+                    split_by_date=False,
+                    split_by_proportion=0.8,
+                    return_shape='3D',
+                    return_type=None):
         """
         Splits dataset pandas DataFrame into train and test sets
 
         Variables:
-        df - Data Frame which will be splitted
-        X - Array/Dataframe containing X values
-        Y - Array/Series containing Y values
-        train_size - size of a train_set 
-        return_shape - 2D or 3D, determines what vector shape will be returned
+        :df - Data Frame which will be splitted
+        :X - Array/Dataframe containing X values
+        :Y - Array/Series containing Y values
+        :split_by_date - str 'YYYY-MM-DD', everything before it will be train set, and after it, test set
+        :train_size - size of a train_set 
+        :return_shape - 2D or 3D, determines what vector shape will be returned
+
+        :return 'X_train','X_test','y_train','y_test'
 
         """
-        split_size = int(len(X)*train_size)
+        if split_by_date:
+            split_size = split_by_date
 
-        X_train,Y_train = X[:split_size],Y[:split_size]
-        X_test,Y_test = X[split_size:],Y[split_size:]
-                
-        X_train = np.array(X_train).astype(np.float16)
-        X_test = np.array(X_test).astype(np.float16)
-        Y_train = np.array(Y_train).astype(np.float16)
-        Y_test = np.array(Y_test).astype(np.float16)
-        
-        print('X_train shape:',X_train.shape,'X_test shape:',X_test.shape,'X_train shape:',Y_train.shape,'Y_test shape:',Y_test.shape)
-        
-        if return_shape=='2D': 
-            return X_train,X_test,Y_train,Y_test
-        if return_shape=='3D':
-            return np.expand_dims(X_train,-1), np.expand_dims(X_test, -1), np.expand_dims(Y_train,-1), np.expand_dims(Y_test,-1)
+        else:
+            split_size = int(len(X)*split_by_proportion)
+
+        if Y != None:
+            X_train,Y_train = X[:split_size],Y[:split_size]
+            X_test,Y_test = X[split_size:],Y[split_size:]
+            
+            if return_type=='numpy':                    
+                X_train = np.array(X_train).astype(np.float16)
+                X_test = np.array(X_test).astype(np.float16)        
+                X_train = np.array(X_train).astype(np.float16)
+                X_test = np.array(X_test).astype(np.float16)
+                Y_train = np.array(Y_train).astype(np.float16)
+                Y_test = np.array(Y_test).astype(np.float16)
+            
+            print('X_train shape:',X_train.shape,'X_test shape:',X_test.shape,'y_train shape:',Y_train.shape,'y_test shape:',Y_test.shape)
+            
+            if return_shape=='2D': 
+                return X_train,X_test,Y_train,Y_test
+            if return_shape=='3D':
+                return np.expand_dims(X_train,-1), np.expand_dims(X_test, -1), np.expand_dims(Y_train,-1), np.expand_dims(Y_test,-1)
+
+        else:
+            X_train = X[:split_size]
+            X_test = X[split_size:]
+
+            if return_type=='numpy':                    
+                X_train = np.array(X_train).astype(np.float16)
+                X_test = np.array(X_test).astype(np.float16)
+
+            
+            print('X_train shape:',X_train.shape,'X_test shape:',X_test.shape)
+            
+            if return_shape=='2D': 
+                return X_train,X_test
+            if return_shape=='3D':
+                return np.expand_dims(X_train,-1), np.expand_dims(X_test, -1)
