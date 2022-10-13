@@ -4,6 +4,8 @@ from .constants import MODELS_FIRST_PART,MODELS_LAST_PART
 import pandas as pd
 import os
 from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
 
 from sqlalchemy import create_engine
 conn_string = os.environ['DB_CONN_STRING']
@@ -42,13 +44,18 @@ def predict_and_plot(forecst_periods,forecast_from,plot_last_mnths,model,ticker,
     # MODEL SELECTION
     # ======================================================================================================================
     # MODEL 1 - Holt Winters - Exponential Smoothing
-    if model == 'Holt-Winters - Exponential Smoothing Model':
+    if model == 'Holt-Winters - Exponential Smoothing':
         model = ExponentialSmoothing(train,trend='mul',seasonal='mul',seasonal_periods=12).fit()
         preds = model.forecast(forecst_periods)
 
     # MODEL 2 - ARIMA
     if model == 'ARIMA':
         model = ARIMA(df['Close'], order=(1, 0, 24)).fit()
+        preds = model.forecast(forecst_periods)
+
+    # MODEL 3 - SARIMAX
+    if model == 'SARIMAX':
+        model = SARIMAX(df['Close'], order=(1, 0, 24)).fit()
         preds = model.forecast(forecst_periods)
 
     else:
