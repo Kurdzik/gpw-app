@@ -3,6 +3,7 @@ import plotly.express as px
 from .constants import MODELS_FIRST_PART,MODELS_LAST_PART
 import pandas as pd
 import os
+from statsmodels.tsa.arima.model import ARIMA
 
 from sqlalchemy import create_engine
 conn_string = os.environ['DB_CONN_STRING']
@@ -40,9 +41,14 @@ def predict_and_plot(forecst_periods,forecast_from,plot_last_mnths,model,ticker,
 
     # MODEL SELECTION
     # ======================================================================================================================
+    # MODEL 1 - Holt Winters - Exponential Smoothing
     if model == 'Holt-Winters - Exponential Smoothing Model':
-        # MODEL 1 - Holt Winters - Exponential Smoothing
         model = ExponentialSmoothing(train,trend='mul',seasonal='mul',seasonal_periods=12).fit()
+        preds = model.forecast(forecst_periods)
+
+    # MODEL 2 - ARIMA
+    if model == 'ARIMA':
+        model = ARIMA(df['Close'], order=(1, 0, 24)).fit()
         preds = model.forecast(forecst_periods)
 
     else:
@@ -75,7 +81,7 @@ def predict_and_plot(forecst_periods,forecast_from,plot_last_mnths,model,ticker,
     fig = px.line(hist_data[plot_data_since:], x=hist_data[plot_data_since:].index, y='Close')
 
     # plot predictions
-    fig.add_scatter(x=df_preds[plot_data_since:].index, y=df_preds[plot_data_since:]['Close'], mode='lines',name='Predictions')
+    fig.add_scatter(x=df_preds[plot_data_since:].index, y=df_preds[plot_data_since:].rename({'predicted_mean':'Close'},axis=1)['Close'], mode='lines',name='Predictions')
 
     # plot true data
     fig.add_scatter(x=df_test.to_frame()[plot_data_since:].index, y=df_test.to_frame()[plot_data_since:]['Close'], mode='lines',name='True data')
