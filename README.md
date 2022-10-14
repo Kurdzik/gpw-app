@@ -34,6 +34,7 @@ Main purpose of this project is to:
 <h3>  CI CD </h3>
 <br>
 Application is deployed [here](https://memory-networks.cytr.us/)  
+<br>  
 
 
 After Pull Request to main branch is completed, server will automatically detect changes and reboot application, it usually takes around 8 minutes for container to be build and set up 
