@@ -11,10 +11,11 @@ Main purpose of this project is to:
 <br>
 <li> <strong>Database connection module</strong>: Functionality to add and remove connection string, after adding it app provides daily updates of stock prices directly to all databases registered </li>
 <li> <strong>Raw Data download module</strong>: Functionality to download stock prices for a selected period of time </li>
-<li> <strong>Analytics module</strong>: Functionalities to plot dashboards containing financial data for a selected company and to perform Time series modelling, currently implemented models:\
-- Holt-Winters Exponential Smoothing model
-- ARIMA model
-- SARIMAX model
+<li> <strong>Analytics module</strong>: Functionalities to plot dashboards containing financial data for a selected company and to perform Time series modelling</li> 
+currently implemented models: \
+- Holt-Winters Exponential Smoothing model \
+- ARIMA model \
+- SARIMAX model \
 <br>
 <hr>
 <h3>  CI CD </h3>
