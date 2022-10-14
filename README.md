@@ -20,7 +20,8 @@ Main purpose of this project is to:
 <li> <strong>Analytics module</strong>: Functionalities to plot dashboards containing financial data for a selected company and to perform Time series modelling</li>  
 
 <br>
-Currently implemented models:  
+<strong>Currently implemented models:</strong>  
+  
 
 - Holt-Winters Exponential Smoothing model  
 
