@@ -21,7 +21,7 @@ Main purpose of this project is to:
 
 <br>
 <strong>Currently implemented models:</strong>  
-  
+
 
 - Holt-Winters Exponential Smoothing model  
 
@@ -33,4 +33,7 @@ Main purpose of this project is to:
 <hr>
 <h3>  CI CD </h3>
 <br>
+Application is deployed [here](https://memory-networks.cytr.us/)  
+
+
 After Pull Request to main branch is completed, server will automatically detect changes and reboot application, it usually takes around 8 minutes for container to be build and set up 
