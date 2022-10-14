@@ -17,7 +17,7 @@ for date in pd.to_datetime(df['Date'],format="%d-%m-%Y").sort_values().unique().
    
 # Updae dates dropdowns
 with open('../static/dropdown/dates_to.csv','w') as file:
-    for line in dates_list:
+    for line in reversed(dates_list):
         file.write(line + ',')
         file.write('\n')
 
