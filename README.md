@@ -33,7 +33,7 @@ Main purpose of this project is to:
 <hr>
 <h3>  CI CD </h3>
 <br>
-Application is deployed [here](https://memory-networks.cytr.us/)  
+Application is deployed [here](https://memory-networks.cytr.us)  
 <br>  
 
 
