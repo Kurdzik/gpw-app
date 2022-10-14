@@ -15,10 +15,14 @@ Main purpose of this project is to:
 <li> <strong>Raw Data download module</strong>: Functionality to download stock prices for a selected period of time </li>
 <li> <strong>Analytics module</strong>: Functionalities to plot dashboards containing financial data for a selected company and to perform Time series modelling</li> 
 <br>
-Currently implemented models:/
-- Holt-Winters Exponential Smoothing model \
-- ARIMA model \
-- SARIMAX model \
+Currently implemented models:  
+
+- Holt-Winters Exponential Smoothing model  
+
+- ARIMA model  
+
+- SARIMAX model  
+
 <br>
 <hr>
 <h3>  CI CD </h3>
