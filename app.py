@@ -3,6 +3,7 @@ from flask import Flask,render_template, request
 from templates.python_scripts.db_functions import get_data_from_db, test_db_conn
 from templates.python_scripts.dashboards_refresh import get_and_plot_data
 from templates.python_scripts.models import predict_and_plot
+from templates.python_scripts.constants import MODELS_FIRST_PART,MODELS_LAST_PART
 import pandas as pd
 import sqlalchemy
 import os
@@ -220,13 +221,17 @@ def run_model():
     model = request.form['ModelSelection']
     
 
-    html_div = predict_and_plot(
+    try:html_div = predict_and_plot(
                                 forecst_periods=forecst_periods,
                                 forecast_from=forecast_from,
                                 plot_last_mnths=plot_last_mnths,
                                 model=model,
                                 ticker=ticker,
                                 data_type='html')
+
+    except Exception:
+        html_div = MODELS_FIRST_PART + '''Predictions into a future are not yet implemented, 
+                                    \n please check model performance on historical data''' + MODELS_LAST_PART
 
     with open(f'templates/rendered_predictions/predictions_temp_{ticker}.html','w') as file:
         file.write(html_div)

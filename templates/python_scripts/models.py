@@ -6,6 +6,8 @@ import os
 from statsmodels.tsa.arima.model import ARIMA
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 
+import warnings
+warnings.filterwarnings('ignore')
 
 from sqlalchemy import create_engine
 conn_string = os.environ['DB_CONN_STRING']
@@ -37,12 +39,13 @@ def predict_and_plot(forecst_periods,forecast_from,plot_last_mnths,model,ticker,
     train = df[:forecast_from]['Close']
     test = df[forecast_from:]['Close']
 
-    if len(test)<1:
-        return MODELS_FIRST_PART + '''Predictions into a future are not yet implemented, 
-                                    \n please check model performance on historical data''' + MODELS_LAST_PART
+    print('==========================================================')
+    print('train',len(train),'test',len(test))
+    print('==========================================================')
 
-
-
+    # if len(test)<1:
+    #     return MODELS_FIRST_PART + '''Predictions into a future are not yet implemented, 
+    #                                 \n please check model performance on historical data''' + MODELS_LAST_PART
 
 
     # MODEL SELECTION
