@@ -37,6 +37,10 @@ def predict_and_plot(forecst_periods,forecast_from,plot_last_mnths,model,ticker,
     train = df[:forecast_from]['Close']
     test = df[forecast_from:]['Close']
 
+    if len(test)<1:
+        return MODELS_FIRST_PART + '''Predictions into a future are not yet implemented, 
+                                    \n please check model performance on historical data''' + MODELS_LAST_PART
+
 
 
 
@@ -44,22 +48,19 @@ def predict_and_plot(forecst_periods,forecast_from,plot_last_mnths,model,ticker,
     # MODEL SELECTION
     # ======================================================================================================================
     # MODEL 1 - Holt Winters - Exponential Smoothing
-    if model == 'Holt-Winters - Exponential Smoothing':
+    if 'Holt' in model:
         model = ExponentialSmoothing(train,trend='mul',seasonal='mul',seasonal_periods=12).fit()
         preds = model.forecast(forecst_periods)
 
     # MODEL 2 - ARIMA
     if model == 'ARIMA':
-        model = ARIMA(df['Close'], order=(1, 0, 24)).fit()
+        model = ARIMA(df['Close'], order=(1, 0, 12)).fit()
         preds = model.forecast(forecst_periods)
 
     # MODEL 3 - SARIMAX
     if model == 'SARIMAX':
-        model = SARIMAX(df['Close'], order=(1, 0, 24)).fit()
+        model = SARIMAX(df['Close'], order=(1, 0, 12)).fit()
         preds = model.forecast(forecst_periods)
-
-    else:
-        return MODELS_FIRST_PART + 'Model not ready' + MODELS_LAST_PART
 
 
     # PLOTTING
@@ -92,7 +93,7 @@ def predict_and_plot(forecst_periods,forecast_from,plot_last_mnths,model,ticker,
 
     # plot true data
     fig.add_scatter(x=df_test.to_frame()[plot_data_since:].index, y=df_test.to_frame()[plot_data_since:]['Close'], mode='lines',name='True data')
-
+    
 
     if data_type == 'html':
         full_html = MODELS_FIRST_PART + fig.to_html()[55:-15] + MODELS_LAST_PART
