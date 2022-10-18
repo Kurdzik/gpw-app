@@ -82,7 +82,7 @@ body.h-100 {
   overflow-x: scroll; /* Show horizontal scrollbar */
   width: 100%;
   max-width: 1600px;
-  height: 650px;
+  min-height: 650px !important;
   border: 1px solid #bebebe;
 }
 
