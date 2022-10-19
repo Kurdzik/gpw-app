@@ -221,7 +221,8 @@ def run_model():
     model = request.form['ModelSelection']
     
 
-    try:html_div = predict_and_plot(
+    try:
+        html_div = predict_and_plot(
                                 forecst_periods=forecst_periods,
                                 forecast_from=forecast_from,
                                 plot_last_mnths=plot_last_mnths,
@@ -229,9 +230,11 @@ def run_model():
                                 ticker=ticker,
                                 data_type='html')
 
-    except Exception:
-        html_div = MODELS_FIRST_PART + '''Predictions into a future are not yet implemented, 
-                                    \n please check model performance on historical data''' + MODELS_LAST_PART
+    except Exception as e:
+        html_div = MODELS_FIRST_PART + e + MODELS_LAST_PART
+
+
+
 
     with open(f'templates/rendered_predictions/predictions_temp_{ticker}.html','w') as file:
         file.write(html_div)
