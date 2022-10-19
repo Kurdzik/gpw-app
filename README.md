@@ -25,10 +25,6 @@ Main purpose of this project is to:
 
 - Holt-Winters Exponential Smoothing model  
 
-- ARIMA model  
-
-- SARIMAX model  
-
 <br>
 <hr>
 <h3>  CI CD </h3>

@@ -42,6 +42,8 @@ def predict_and_plot(forecst_periods,forecast_from,plot_last_mnths,model,ticker,
     print('==========================================================')
     print('train',len(train),'test',len(test))
     print('==========================================================')
+    print('Min:', df.index.min(),'Max:', df.index.max() )
+    print('==========================================================')
 
     if len(test)<1:
         return MODELS_FIRST_PART + '''Predictions into a future are not yet implemented, 

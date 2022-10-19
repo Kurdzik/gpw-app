@@ -231,7 +231,7 @@ def run_model():
                                 data_type='html')
 
     except Exception as e:
-        html_div = MODELS_FIRST_PART + e + MODELS_LAST_PART
+        html_div = MODELS_FIRST_PART + 'unexpected error occured, please try another combination of date and company ticker' + MODELS_LAST_PART
 
 
 
