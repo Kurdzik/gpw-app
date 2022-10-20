@@ -216,21 +216,26 @@ MODELS_FIRST_PART ='''<!DOCTYPE html>
           </div>
           <div class="input-group mb-3">
             <div class="input-group-prepend">
-              <label class="input-group-text" for="selectDatesFrom"
-                >Start forecast from:</label
+              <label class="input-group-text" for="trainTestSplit"
+                >What part of dataset should be treated as train set:</label
               >
             </div>
-            <select
-              id="selectDatesFrom"
-              name="Dates1Selection"
-              class="custom-select"
-            ></select>
+            <input
+              type="float"
+              min="0.00"
+              max="1.00"
+              id="trainTestSplit"
+              name="trainTestSplit"
+              maxlength="4"
+              size="6"
+              required
+            />
           </div>
-
-          <div class="input-group mb-3">
+ 
+          <!-- <div class="input-group mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text" for="fcstPeriod"
-                >Forecast feriod in days:</label
+                >Forecast period in days:</label
               >
             </div>
             <input
@@ -243,8 +248,8 @@ MODELS_FIRST_PART ='''<!DOCTYPE html>
               size="6"
               required
             />
-          </div>
-          <div class="input-group mb-3">
+          </div> -->
+          <!-- <div class="input-group mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text" for="pltPeriod"
                 >How many historical months to plot:</label
@@ -260,7 +265,7 @@ MODELS_FIRST_PART ='''<!DOCTYPE html>
               size="6"
               required
             />
-          </div>
+          </div> -->
           <!-- <div class="input-group mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text" for="plotFcst"

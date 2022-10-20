@@ -15,7 +15,9 @@ engine = create_engine(conn_string)
 conn = engine.connect()
 
 
-def predict_and_plot(forecst_periods,forecast_from,plot_last_mnths,model,ticker,data_type='plot'):
+def predict_and_plot(split_proportion,model,ticker,data_type='plot'):
+
+    plot_last_mnths = 3
 
     # Get data
     q_2 = f'''SELECT * FROM gpw_predictors."{ticker}"
@@ -33,16 +35,22 @@ def predict_and_plot(forecst_periods,forecast_from,plot_last_mnths,model,ticker,
     df = df.set_index('Date')
 
     # Dataset parameters
-    plot_data_since = pd.date_range(end=forecast_from,periods=plot_last_mnths,freq='M')[0].date()
+    plot_data_since = pd.date_range(end=df.index.min(),periods=plot_last_mnths,freq='M')[0].date()
 
     # Train test split
-    train = df[:forecast_from]['Close']
-    test = df[forecast_from:]['Close']
+    split_size = int(len(df)*split_proportion)
 
+    # if Y != None:
+    # X_train,Y_train = X[:split_size],Y[:split_size]
+    # X_test,Y_test = X[split_size:],Y[split_size:]
+
+    train = df[:split_size]['Close']
+    test = df[split_size:]['Close']
+    forecst_periods = len(test)
     print('==========================================================')
     print('train',len(train),'test',len(test))
     print('==========================================================')
-    print('Min:', df.index.min(),'Max:', df.index.max() )
+    print('Min:', df.index.max(),'Max:', df.index.max() )
     print('==========================================================')
 
     if len(test)<1:
@@ -56,6 +64,9 @@ def predict_and_plot(forecst_periods,forecast_from,plot_last_mnths,model,ticker,
     if 'Holt' in model:
         model = ExponentialSmoothing(train,trend='mul',seasonal='mul',seasonal_periods=12).fit()
         preds = model.forecast(forecst_periods)
+
+    print('Model trained')
+    print('==========================================================')
 
     # MODEL 2 - ARIMA
     if model == 'ARIMA':
@@ -102,7 +113,14 @@ def predict_and_plot(forecst_periods,forecast_from,plot_last_mnths,model,ticker,
 
     if data_type == 'html':
         full_html = MODELS_FIRST_PART + fig.to_html()[55:-15] + MODELS_LAST_PART
+        
+        print('Plot generated')
+        print('==========================================================')
+
         return full_html
 
     elif data_type == 'plot':
+
+        print('Plot generated')
+        print('==========================================================')
         return fig.show()

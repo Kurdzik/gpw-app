@@ -215,17 +215,13 @@ def run_model():
     ticker = request.form['tickerSelectionPreds']
 
     ticker = request.form['tickerSelectionPreds']
-    forecast_from = request.form['Dates1Selection']
-    forecst_periods = int(request.form['fcstPeriodName'])
-    plot_last_mnths = int(request.form['pltPeriodName'])
+    split_proportion = float(request.form['trainTestSplit'])
     model = request.form['ModelSelection']
     
 
     try:
         html_div = predict_and_plot(
-                                forecst_periods=forecst_periods,
-                                forecast_from=forecast_from,
-                                plot_last_mnths=plot_last_mnths,
+                                split_proportion=split_proportion,
                                 model=model,
                                 ticker=ticker,
                                 data_type='html')
