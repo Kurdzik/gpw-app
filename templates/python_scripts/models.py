@@ -53,7 +53,7 @@ def predict_and_plot(split_proportion,model,ticker,data_type='plot'):
     print('Min:', df.index.max(),'Max:', df.index.max() )
     print('==========================================================')
 
-    if len(test)<1:
+    if len(test)<=1:
         return MODELS_FIRST_PART + '''Predictions into a future are not yet implemented, 
                                     \n please check model performance on historical data''' + MODELS_LAST_PART
 
