@@ -5,7 +5,9 @@ from gpw_functions import map_financial_data
 import time
 import numpy as np
 import time
+import warnings
 
+warnings.filterwarnings("ignore")
 
 conn_string = os.environ['DB_CONN_STRING']
 
@@ -38,24 +40,24 @@ for i,ticker in enumerate(tickers.values):
         continue
     
     df, BS, RZiS, CF = map_financial_data(df = df_all.loc[df_all['Ticker']==ticker], db_conn = conn)
-        
+    
     if type(df)!=str:
-        df.to_sql(str(ticker),schema='gpw_predictors',if_exists='replace',con=conn)
+        df.to_sql(ticker,schema='gpw_predictors',if_exists='replace',con=conn)
     else:
         print(f'ignoring {ticker} df')
         
     if type(BS)!=str:
-        BS.to_sql(str(ticker),schema='gpw_BS',if_exists='replace',con=conn)
+        BS.to_sql(ticker,schema='gpw_BS',if_exists='replace',con=conn)
     else:
         print(f'ignoring {ticker} BS')
         
     if type(RZiS)!=str:
-        RZiS.to_sql(str(ticker),schema='gpw_RZiS',if_exists='replace',con=conn)
+        RZiS.to_sql(ticker,schema='gpw_RZiS',if_exists='replace',con=conn)
     else:
         print(f'ignoring {ticker} RZiS')
         
     if type(CF)!=str:
-        CF.to_sql(str(ticker),schema='gpw_CF',if_exists='replace',con=conn)
+        CF.to_sql(ticker,schema='gpw_CF',if_exists='replace',con=conn)
     else:
         print(f'ignoring {ticker} CF')
         continue

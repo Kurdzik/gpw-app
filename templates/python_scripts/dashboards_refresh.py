@@ -109,16 +109,16 @@ def get_and_plot_data(ticker,data_type = 'plot'):
     #======== Indicators ===================================================================================================================================================================================================
     # Graph 7 - (P/E) C/Z
     try: fig7 = px.line(data_frame=df_pred.rename({'C/Z':'P/E'},axis=1)
-                        ,y='P/E',x='Date',text_auto=True).data[0]
+                        ,y='P/E',x='Date').data[0]
     except Exception: fig7 = px.bar(x=[0],y=[0]).data[0]
 
     # Graph 8 - (P/BW) C/WK
     try: fig8 = px.line(data_frame=df_pred.rename({'C/WK':'P/BV'},axis=1)
-                        ,y='P/BV',x='Date',text_auto=True).data[0]
+                        ,y='P/BV',x='Date').data[0]
     except Exception: fig8 = px.bar(x=[0],y=[0]).data[0]
 
     # Graph 9 - (EV/EBITDA) EV/EBITDA
-    try: fig9 = px.line(data_frame=df_pred,y='EV / EBITDA',x='Date',text_auto=True).data[0]
+    try: fig9 = px.line(data_frame=df_pred,y='EV / EBITDA',x='Date').data[0]
     except Exception: fig9 = px.bar(x=[0],y=[0]).data[0]
 
     #======== Figures =====================================================================================================================================================================================================

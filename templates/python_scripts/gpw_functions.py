@@ -366,20 +366,9 @@ def map_financial_data(df,db_conn):
         mapping_dict[df['Ticker'].tolist()[0]]
         comp = mapping_dict[df['Ticker'].tolist()[0]]
     
-    except KeyError:
-        # adding missing ticker to tickers list
-         
-        # if file exists     
-        # try:
-        #     missing_data = list(pd.read_csv('missing_companies.csv'))           
-        #     missing_data.append(df['Ticker'].tolist()[0])
-        #     pd.DataFrame(missing_data).to_csv('missing_companies.csv')
-        # # if not
-        # except EmptyDataError:
-        #     missing_data = []
-        #     missing_data.append(df['Ticker'].tolist()[0])
-        #     pd.DataFrame(missing_data).to_csv('missing_companies.csv')
-
+    except Exception as e:
+        print(e)
+        
         return 'not avaiable','not avaiable','not avaiable','not avaiable'
 
 
