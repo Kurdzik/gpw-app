@@ -109,4 +109,4 @@ def fit_and_plot(ticker,model_name,plot_last_mnths,conn,data_type='plot'):
 
     elif data_type == 'plot':
 
-        return fig_1.show(), fig_2.show()
+        return fig_1.show() + metrics
