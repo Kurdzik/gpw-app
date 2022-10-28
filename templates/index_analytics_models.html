@@ -69,7 +69,7 @@
       <main class="px-3">
         <h1>Select Company, Period for prediction and Model</h1>
         <form
-          action="make_prediction"
+          action="check_performance"
           method="post"
           class="d-block my-5 get_data_form"
         >
@@ -85,7 +85,7 @@
               name="tickerSelectionPreds"
             ></select>
           </div>
-          <div class="input-group mb-3">
+          <!-- <div class="input-group mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text" for="trainTestSplit"
                 >What part of dataset should be treated as train set:</label
@@ -101,7 +101,7 @@
               size="6"
               required
             />
-          </div>
+          </div> -->
  
           <!-- <div class="input-group mb-3">
             <div class="input-group-prepend">
@@ -120,7 +120,7 @@
               required
             />
           </div> -->
-          <!-- <div class="input-group mb-3">
+          <div class="input-group mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text" for="pltPeriod"
                 >How many historical months to plot:</label
@@ -136,7 +136,7 @@
               size="6"
               required
             />
-          </div> -->
+          </div>
           <!-- <div class="input-group mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text" for="plotFcst"
@@ -198,7 +198,7 @@
           <input
             class="btn btn-success btn-lg mt-4 mx-auto d-block"
             type="submit"
-            value="Make Prediction"
+            value="Check model performance"
           />
         </form>
         <hr>

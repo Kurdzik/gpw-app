@@ -198,7 +198,7 @@ MODELS_FIRST_PART ='''<!DOCTYPE html>
       <main class="px-3">
         <h1>Select Company, Period for prediction and Model</h1>
         <form
-          action="make_prediction"
+          action="check_performance"
           method="post"
           class="d-block my-5 get_data_form"
         >
@@ -214,7 +214,7 @@ MODELS_FIRST_PART ='''<!DOCTYPE html>
               name="tickerSelectionPreds"
             ></select>
           </div>
-          <div class="input-group mb-3">
+          <!-- <div class="input-group mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text" for="trainTestSplit"
                 >What part of dataset should be treated as train set:</label
@@ -230,7 +230,7 @@ MODELS_FIRST_PART ='''<!DOCTYPE html>
               size="6"
               required
             />
-          </div>
+          </div> -->
  
           <!-- <div class="input-group mb-3">
             <div class="input-group-prepend">
@@ -249,7 +249,7 @@ MODELS_FIRST_PART ='''<!DOCTYPE html>
               required
             />
           </div> -->
-          <!-- <div class="input-group mb-3">
+          <div class="input-group mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text" for="pltPeriod"
                 >How many historical months to plot:</label
@@ -265,7 +265,7 @@ MODELS_FIRST_PART ='''<!DOCTYPE html>
               size="6"
               required
             />
-          </div> -->
+          </div>
           <!-- <div class="input-group mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text" for="plotFcst"
@@ -327,7 +327,7 @@ MODELS_FIRST_PART ='''<!DOCTYPE html>
           <input
             class="btn btn-success btn-lg mt-4 mx-auto d-block"
             type="submit"
-            value="Make Prediction"
+            value="Check model performance"
           />
         </form>
         <hr>'''

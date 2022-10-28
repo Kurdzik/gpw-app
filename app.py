@@ -2,7 +2,7 @@ from time import time
 from flask import Flask,render_template, request
 from templates.python_scripts.db_functions import get_data_from_db, test_db_conn
 from templates.python_scripts.dashboards_refresh import get_and_plot_data
-from templates.python_scripts.models import predict_and_plot
+from templates.python_scripts.models import fit_and_plot
 from templates.python_scripts.constants import MODELS_FIRST_PART,MODELS_LAST_PART
 import pandas as pd
 import sqlalchemy
@@ -210,21 +210,22 @@ def init_model():
 
     return render_template('index_analytics_models.html')
 
-@app.route('/make_prediction',methods=['POST','GET'])
+@app.route('/check_performance',methods=['POST','GET'])
 def run_model():
     ticker = request.form['tickerSelectionPreds']
 
     ticker = request.form['tickerSelectionPreds']
-    split_proportion = float(request.form['trainTestSplit'])
+    plot_last_mnths = int(request.form['pltPeriodName'])
     model = request.form['ModelSelection']
     
 
     try:
-        html_div = predict_and_plot(
-                                split_proportion=split_proportion,
-                                model=model,
-                                ticker=ticker,
-                                data_type='html')
+        html_div = fit_and_plot(
+                                ticker = ticker,
+                                model_name = model,
+                                plot_last_mnths = plot_last_mnths,
+                                conn = conn,
+                                data_type = 'html')
 
     except Exception as e:
         html_div = MODELS_FIRST_PART + 'unexpected error occured, please try another combination of date and company ticker' + MODELS_LAST_PART
