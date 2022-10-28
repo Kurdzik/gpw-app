@@ -1,6 +1,6 @@
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
 import plotly.express as px
-from .constants import MODELS_FIRST_PART,MODELS_LAST_PART
+from .constants import MODELS_FIRST_PART,MODELS_LAST_PART, PREDICTIONS_FIRST_PART, PREDICTIONS_LAST_PART
 import pandas as pd
 import os
 import numpy as np
@@ -110,3 +110,68 @@ def fit_and_plot(ticker,model_name,plot_last_mnths,conn,data_type='plot'):
     elif data_type == 'plot':
 
         return fig_1.show() + metrics
+
+
+
+def predict_and_plot(ticker,model_name,fcst_period,plot_last_mnths,conn,data_type):
+
+    # Get data
+    q = f'''SELECT * FROM gpw_predictors."{ticker}"
+    order by to_date("Date",'dd-mm-yyyy');'''
+
+    # preprocess data
+    df = pd.read_sql(q,conn)
+    df['Close_pct'] = df['Close'].pct_change().mul(100)
+    df['Open_pct'] = df['Open'].pct_change().mul(100)
+    df['Max_pct'] = df['Max'].pct_change().mul(100)
+    df['Min_pct'] = df['Min'].pct_change().mul(100)
+    df = df.iloc[1:,:]
+    df = df.drop(columns=['level_0','index','Ticker','Currency','Open','Max','Min','Year'])
+    df['Date'] = pd.to_datetime(df['Date'],dayfirst=True)
+    df = df.set_index('Date')
+
+    # Dataset parameters
+    plot_data_since = pd.date_range(end=df.index.max(),periods=plot_last_mnths,freq='M')[0].date()
+
+    dataset = df['Close']
+
+
+    # MODEL SELECTION
+    # ======================================================================================================================
+    # MODEL 1 - Holt Winters - Exponential Smoothing
+
+    if 'Holt' in model_name:
+        model = ExponentialSmoothing(dataset,trend='mul',seasonal='mul',seasonal_periods=12).fit()
+
+
+    # Get index for forcated values - only Business Days, no weekends
+    fcsted_index = pd.date_range(start=model.fittedvalues.index[-1],freq='B',periods=fcst_period)
+
+    # Get forcasted values 
+    fcsted_vals = model.forecast(fcst_period).to_frame().set_index(fcsted_index).rename({0:'Close'},axis=1)
+
+    # Merge historical and forecasted values into one data frame
+    hist_data = dataset.to_frame()
+    hist_data['Type'] = 'True Values'
+    fcsted_vals['Type'] = 'Predictions'
+
+    joint_data = pd.concat([hist_data,fcsted_vals],axis=0)[plot_data_since:]
+
+    # GRAPHS
+    # ======================================================================================================================
+    fig = px.line(x=joint_data.index, y=joint_data['Close'], color = joint_data['Type'])
+
+    fig.update_layout(
+        title=f'company: {ticker}, model: {model_name}, prediction for: {fcst_period} days',
+        xaxis_title="Date",
+        yaxis_title="Price in PLN"
+    )
+
+    if data_type == 'html':
+        full_html = PREDICTIONS_FIRST_PART + fig.to_html()[55:-15] +  PREDICTIONS_LAST_PART
+        
+        return full_html
+
+    elif data_type == 'plot':
+
+        return fig.show()

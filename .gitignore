@@ -1,6 +1,5 @@
 *__pycache__*
-*dashboards_temp_*
-*predictions_temp_*
+*_temp_*
 *.DS_Store
 *Dockerfile
 *.ipynb_checkpoints

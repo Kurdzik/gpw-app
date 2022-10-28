@@ -2,8 +2,8 @@ from time import time
 from flask import Flask,render_template, request
 from templates.python_scripts.db_functions import get_data_from_db, test_db_conn
 from templates.python_scripts.dashboards_refresh import get_and_plot_data
-from templates.python_scripts.models import fit_and_plot
-from templates.python_scripts.constants import MODELS_FIRST_PART,MODELS_LAST_PART
+from templates.python_scripts.models import fit_and_plot, predict_and_plot
+from templates.python_scripts.constants import MODELS_FIRST_PART,MODELS_LAST_PART,PREDICTIONS_FIRST_PART,PREDICTIONS_LAST_PART
 import pandas as pd
 import sqlalchemy
 import os
@@ -205,14 +205,19 @@ def fundam_analysis():
     return render_template(f'rendered_dashboards/dashboards_temp_{ticker}.html')
 
 #----------------- ANALYTICS MODULE - FORECASTING ------------------------------------------
-@app.route('/analytics_forecasting')
+@app.route('/analytics_forecasting_choice')
+def init_analytics_forecasting_choice():
+
+    return render_template('index_analytics_forecasting_choice.html')
+
+#----------------- ANALYTICS MODULE - FORECASTING - MODEL SELECTION -----------------------
+@app.route('/analytics_forecasting_model_selection')
 def init_model():
 
     return render_template('index_analytics_models.html')
 
 @app.route('/check_performance',methods=['POST','GET'])
 def run_model():
-    ticker = request.form['tickerSelectionPreds']
 
     ticker = request.form['tickerSelectionPreds']
     plot_last_mnths = int(request.form['pltPeriodName'])
@@ -237,6 +242,41 @@ def run_model():
         file.write(html_div)
 
     return render_template(f'rendered_predictions/predictions_temp_{ticker}.html')
+
+
+#----------------- ANALYTICS MODULE - FORECASTING - PREDICTIONS ---------------------------
+@app.route('/init_preds')
+def init_preds_model():
+
+    return render_template('index_analytics_preds.html')
+
+@app.route('/preds',methods=['POST','GET'])
+def predict():
+
+
+    ticker = request.form['tickerSelectionPreds']
+    plot_last_mnths = int(request.form['pltPeriodName'])
+    model = request.form['ModelSelection']
+    forecast_days = int(request.form['fcstPeriodName'])
+
+    try:
+        html_div = predict_and_plot(
+                                    ticker = ticker,
+                                    model_name = model,
+                                    fcst_period = forecast_days,
+                                    plot_last_mnths = plot_last_mnths,
+                                    conn = conn,
+                                    data_type = 'html')
+
+    except Exception as e:
+        html_div = PREDICTIONS_FIRST_PART + 'Unexpected error occured, please try again later' + PREDICTIONS_LAST_PART
+
+
+    with open(f'templates/rendered_predictions/predictions_future_temp_{ticker}.html','w') as file:
+        file.write(html_div)
+
+    return render_template(f'rendered_predictions/predictions_future_temp_{ticker}.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -67,9 +67,9 @@
         </nav>
       </header>
       <main class="px-3">
-        <h1>Select Company and Model</h1>
+        <h1>Select Company, Period for prediction and Model</h1>
         <form
-          action="check_performance"
+          action="preds"
           method="post"
           class="d-block my-5 get_data_form"
         >
@@ -85,25 +85,8 @@
               name="tickerSelectionPreds"
             ></select>
           </div>
-          <!-- <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <label class="input-group-text" for="trainTestSplit"
-                >What part of dataset should be treated as train set:</label
-              >
-            </div>
-            <input
-              type="float"
-              min="0.00"
-              max="1.00"
-              id="trainTestSplit"
-              name="trainTestSplit"
-              maxlength="4"
-              size="6"
-              required
-            />
-          </div> -->
  
-          <!-- <div class="input-group mb-3">
+          <div class="input-group mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text" for="fcstPeriod"
                 >Forecast period in days:</label
@@ -119,7 +102,8 @@
               size="6"
               required
             />
-          </div> -->
+          </div>
+
           <div class="input-group mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text" for="pltPeriod"
@@ -137,19 +121,7 @@
               required
             />
           </div>
-          <!-- <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <label class="input-group-text" for="plotFcst"
-                >Plot historical data?</label
-              >
-            </div>
-            <input
-              type="checkbox"
-              id="plotFcst"
-              name="plotFcstName"
-              value="plotTrue"
-            />
-          </div> -->
+
           <div class="input-group mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text" for="selectModel"
@@ -163,42 +135,10 @@
             ></select>
           </div>
           
-          <!-- <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <label class="input-group-text" for="MACD"
-                >Add MACD indicator?</label
-              >
-            </div>
-            <input type="checkbox" id="MACD" name="MACDBox" value="MACDTrue" />
-          </div> -->
-          <!-- <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <label class="input-group-text" for="EAvg"
-                >Add EMA indicator?</label
-              >
-            </div>
-            <input type="checkbox" id="EAvg" name="EAvgBox" value="EATrue" />
-          </div> -->
-          <!-- <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <label class="input-group-text" for="BB"
-                >Add Boillinger Bands indicators?</label
-              >
-            </div>
-            <input type="checkbox" id="BB" name="BBBox" value="BBTrue" />
-          </div>
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <label class="input-group-text" for="SD"
-                >Add Boillinger Bands indicators?</label
-              >
-            </div>
-            <input type="checkbox" id="SD" name="SDBox" value="SDTrue" />
-          </div> -->
           <input
             class="btn btn-success btn-lg mt-4 mx-auto d-block"
             type="submit"
-            value="Check model performance"
+            value="Make Predictions"
           />
         </form>
         <hr>
