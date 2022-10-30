@@ -41,7 +41,12 @@ if len(data)>0:
     for conn_string in creds.iterrows():
         try:
             data.to_sql(conn_string[1][1],con = conn_string[1][0], schema = conn_string[1][2],if_exists = 'append')
+            print(f'data uploaded to {conn_string}')
         except Exception:
+            print(f'data could not be loaded uploaded to {conn_string}')
             continue
+
 else: print('No records collected today')
+
+
         
