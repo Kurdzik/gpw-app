@@ -26,7 +26,7 @@ tickers = pd.read_sql(q,con=conn)
 # upload the data on separate schemas if the data is avaiable
 
 
-for ticker in tqdm(tickers.values):
+for ticker in tqdm(tickers.values[495:]):
     time.sleep(np.random.randint(5,7))
         
     # because we are working with the list of lists
