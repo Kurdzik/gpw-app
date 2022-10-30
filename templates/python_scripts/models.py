@@ -21,20 +21,25 @@ conn = engine.connect()
 def fit_and_plot(ticker,model_name,plot_last_mnths,conn,data_type='plot'):
 
     # Get data
-    q = f'''SELECT * FROM gpw_predictors."{ticker}"
-    order by to_date("Date",'dd-mm-yyyy');'''
+    # q = f'''SELECT * FROM gpw_predictors."{ticker}"
+    # order by to_date("Date",'dd-mm-yyyy');'''
 
+    q = f'''
+    SELECT "Close","Date"
+    FROM gpw.notowania
+    where "Ticker" = '{ticker}'
+    order by to_date("Date",'dd-mm-yyyy'); '''
     # preprocess data
-    df = pd.read_sql(q,conn)
-    df['Close_pct'] = df['Close'].pct_change().mul(100)
-    df['Open_pct'] = df['Open'].pct_change().mul(100)
-    df['Max_pct'] = df['Max'].pct_change().mul(100)
-    df['Min_pct'] = df['Min'].pct_change().mul(100)
-    df = df.iloc[1:,:]
-    df = df.drop(columns=['level_0','index','Ticker','Currency','Open','Max','Min','Year'])
-    df['Date'] = pd.to_datetime(df['Date'],dayfirst=True)
-    df = df.set_index('Date')
-
+    # df = pd.read_sql(q,conn)
+    # df['Close_pct'] = df['Close'].pct_change().mul(100)
+    # df['Open_pct'] = df['Open'].pct_change().mul(100)
+    # df['Max_pct'] = df['Max'].pct_change().mul(100)
+    # df['Min_pct'] = df['Min'].pct_change().mul(100)
+    # df = df.iloc[1:,:]
+    # df = df.drop(columns=['level_0','index','Ticker','Currency','Open','Max','Min','Year'])
+    # df['Date'] = pd.to_datetime(df['Date'],dayfirst=True)
+    # df = df.set_index('Date')
+    df = pd.read_sql(q,conn,parse_dates='Date',index_col='Date')
     # Dataset parameters
     plot_data_since = pd.date_range(end=df.index.max(),periods=plot_last_mnths,freq='M')[0].date()
 
@@ -116,19 +121,36 @@ def fit_and_plot(ticker,model_name,plot_last_mnths,conn,data_type='plot'):
 def predict_and_plot(ticker,model_name,fcst_period,plot_last_mnths,conn,data_type):
 
     # Get data
-    q = f'''SELECT * FROM gpw_predictors."{ticker}"
-    order by to_date("Date",'dd-mm-yyyy');'''
+    # q = f'''SELECT * FROM gpw_predictors."{ticker}"
+    # order by to_date("Date",'dd-mm-yyyy');'''
 
+    # # preprocess data
+    # df = pd.read_sql(q,conn)
+    # df['Close_pct'] = df['Close'].pct_change().mul(100)
+    # df['Open_pct'] = df['Open'].pct_change().mul(100)
+    # df['Max_pct'] = df['Max'].pct_change().mul(100)
+    # df['Min_pct'] = df['Min'].pct_change().mul(100)
+    # df = df.iloc[1:,:]
+    # df = df.drop(columns=['level_0','index','Ticker','Currency','Open','Max','Min','Year'])
+    # df['Date'] = pd.to_datetime(df['Date'],dayfirst=True)
+    # df = df.set_index('Date')
+
+    q = f'''
+    SELECT "Close","Date"
+    FROM gpw.notowania
+    where "Ticker" = '{ticker}'
+    order by to_date("Date",'dd-mm-yyyy'); '''
     # preprocess data
-    df = pd.read_sql(q,conn)
-    df['Close_pct'] = df['Close'].pct_change().mul(100)
-    df['Open_pct'] = df['Open'].pct_change().mul(100)
-    df['Max_pct'] = df['Max'].pct_change().mul(100)
-    df['Min_pct'] = df['Min'].pct_change().mul(100)
-    df = df.iloc[1:,:]
-    df = df.drop(columns=['level_0','index','Ticker','Currency','Open','Max','Min','Year'])
-    df['Date'] = pd.to_datetime(df['Date'],dayfirst=True)
-    df = df.set_index('Date')
+    # df = pd.read_sql(q,conn)
+    # df['Close_pct'] = df['Close'].pct_change().mul(100)
+    # df['Open_pct'] = df['Open'].pct_change().mul(100)
+    # df['Max_pct'] = df['Max'].pct_change().mul(100)
+    # df['Min_pct'] = df['Min'].pct_change().mul(100)
+    # df = df.iloc[1:,:]
+    # df = df.drop(columns=['level_0','index','Ticker','Currency','Open','Max','Min','Year'])
+    # df['Date'] = pd.to_datetime(df['Date'],dayfirst=True)
+    # df = df.set_index('Date')
+    df = pd.read_sql(q,conn,parse_dates='Date',index_col='Date')
 
     # Dataset parameters
     plot_data_since = pd.date_range(end=df.index.max(),periods=plot_last_mnths,freq='M')[0].date()
