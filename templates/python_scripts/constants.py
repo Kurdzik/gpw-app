@@ -148,7 +148,7 @@ MODELS_FIRST_PART ='''<!DOCTYPE html>
   </head>
 
   <body class="d-flex h-100 text-center text-bg-dark">
-    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <div class="d-flex h-100 p-3 mx-auto flex-column">
       <header class="mb-auto">
         <nav
           class="navbar navbar-expand-lg navbar-dark nav-masthead justify-content-center"
