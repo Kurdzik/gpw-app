@@ -46,8 +46,8 @@ def run_data_loader():
     date_to = request.form['Dates2Selection']
 
     df = get_data_from_db(date_from=date_from,
-                     date_to=date_to,
-                     ticker=ticker)
+                          date_to=date_to,
+                          ticker=ticker)
 
     file_name = 'stocks_'+date_from+'-'+date_to+'.csv'
 
@@ -221,7 +221,6 @@ def run_model():
     ticker = request.form['tickerSelectionPreds']
     plot_last_mnths = int(request.form['pltPeriodName'])
     model = request.form['ModelSelection']
-    
 
     try:
         html_div = fit_and_plot(
