@@ -112,13 +112,10 @@ def test_conn():
 
 @app.route('/add_connection',methods=['POST','GET'])
 def add_conn():
-
-
-    
+   
     try:pd.DataFrame([conn_string,db_table,db_schema,'active']).T.rename({0:'connection_string',1:'table',2:'schema',3:'status'},axis=1).to_sql('connections',if_exists='append',con=conn,schema='connected_dbs',index=False)
     except Exception: message = 'Something went wrong, connection was not added'
     message = 'Connection added successfully'
-
 
     return render_template('index_db_conn.html',message=message)
 
@@ -137,7 +134,6 @@ def confirm_removal():
     database = request.form['DB']
     db_user = request.form['DBUser']
     db_pass = request.form['DBPass']
-
 
     message, message_link, conn_string, approval = test_db_conn(db_type=db_type,
                                                                 db_ip=db_ip,
