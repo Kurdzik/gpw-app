@@ -1,4 +1,3 @@
-from time import time
 from flask import Flask,render_template, request
 from templates.python_scripts.db_functions import get_data_from_db, test_db_conn
 from templates.python_scripts.dashboards_refresh import get_and_plot_data
