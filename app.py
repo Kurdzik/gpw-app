@@ -247,7 +247,6 @@ def init_preds_model():
 @app.route('/preds',methods=['POST','GET'])
 def predict():
 
-
     ticker = request.form['tickerSelectionPreds']
     plot_last_mnths = int(request.form['pltPeriodName'])
     model = request.form['ModelSelection']
