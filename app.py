@@ -229,9 +229,6 @@ def run_model():
     except Exception as e:
         html_div = MODELS_FIRST_PART + 'unexpected error occured, please try another combination of date and company ticker' + MODELS_LAST_PART
 
-
-
-
     with open(f'templates/rendered_predictions/predictions_temp_{ticker}.html','w') as file:
         file.write(html_div)
 
@@ -269,7 +266,6 @@ def predict():
         file.write(html_div)
 
     return render_template(f'rendered_predictions/predictions_future_temp_{ticker}.html')
-
 
 if __name__ == '__main__':
     app.run(debug=True)
