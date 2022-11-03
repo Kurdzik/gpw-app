@@ -19,6 +19,8 @@ Main purpose of this project is to:
 
 <li> <strong>Analytics module</strong>: Functionalities to plot dashboards containing financial data for a selected company and to perform Time series modelling, below is presented schema of how predictions are made:</li>
 
+<br>
+
 ![img1](build/make_predictions_schema.PNG)
 
 <br>
