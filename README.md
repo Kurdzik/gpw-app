@@ -17,11 +17,11 @@ Main purpose of this project is to:
 
 <li> <strong>Raw Data download module</strong>: Functionality to download stock prices for a selected period of time </li>  
 
-<li> <strong>Analytics module</strong>: Functionalities to plot dashboards containing financial data for a selected company and to perform Time series modelling</li>  
+<li> <strong>Analytics module</strong>: Functionalities to plot dashboards containing financial data for a selected company and to perform Time series modelling, below is presented schema how does predictions are made:</li>
+![img1](build/make_predictions_schema.PNG)
 
 <br>
 <strong>Currently implemented models:</strong>  
-
 
 - Holt-Winters Exponential Smoothing model  
 
