@@ -49,7 +49,6 @@ def fit_and_plot(ticker,model_name,plot_last_mnths,conn,data_type='plot'):
     fitted_data = model.fittedvalues
 
 
-
     # GRAPHS
     # ======================================================================================================================
     # Join data 
@@ -80,13 +79,6 @@ def fit_and_plot(ticker,model_name,plot_last_mnths,conn,data_type='plot'):
 
     mape = mean_absolute_percentage_error(joint_data['True Value'],joint_data['Predictions']) 
     mae = mean_absolute_error(joint_data['True Value'],joint_data['Predictions']) 
-
-    # fig_2 = go.Figure(data=[go.Table(header=dict(values=['Metric', 'Score']),
-    #                 cells=dict(values=[['Mean Absolute Percentage Error', 'Mean Absolute Error'], [f'{np.round(mape,4)*100} %', f'{np.round(mae,2)} PLN']]))
-    #                     ])
-    # fig_2.update_layout(
-    #     height=250        
-    # )
 
     metrics = pd.DataFrame()
     
@@ -139,7 +131,7 @@ def predict_and_plot(ticker,model_name,fcst_period,plot_last_mnths,conn,data_typ
     fcsted_index = pd.date_range(start=model.fittedvalues.index[-1],freq='B',periods=fcst_period)
 
     # Get forcasted values 
-    fcsted_vals = model.forecast(fcst_period).to_frame().set_index(fcsted_index).rename({0:'Close'},axis=1)
+    fcsted_vals = model.forecast(fcst_period).to_frame().set_index(fcsted_index).rename({0:'Close','predicted_mean':'Close'},axis=1)
 
     # Merge historical and forecasted values into one data frame
     hist_data = dataset.to_frame()

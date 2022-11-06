@@ -1,6 +1,6 @@
 from flask import Flask,render_template, request
 from templates.python_scripts.db_functions import get_data_from_db, test_db_conn
-from templates.python_scripts.dashboards_refresh import get_and_plot_data
+from templates.python_scripts.dashboards_functions import get_and_plot_data
 from templates.python_scripts.models import fit_and_plot, predict_and_plot
 from templates.python_scripts.constants import MODELS_FIRST_PART,MODELS_LAST_PART,PREDICTIONS_FIRST_PART,PREDICTIONS_LAST_PART
 import pandas as pd
