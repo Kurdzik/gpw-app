@@ -2,7 +2,7 @@ from plotly.subplots import make_subplots
 import time
 import tqdm
 import numpy as np
-from gpw_functions import map_financial_data
+from .gpw_functions import map_financial_data
 import unidecode
 import plotly.express as px
 from sqlalchemy import create_engine
