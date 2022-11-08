@@ -1,9 +1,9 @@
-from .constants import MODELS_FIRST_PART,MODELS_LAST_PART, PREDICTIONS_FIRST_PART, PREDICTIONS_LAST_PART
+from constants import MODELS_FIRST_PART,MODELS_LAST_PART, PREDICTIONS_FIRST_PART, PREDICTIONS_LAST_PART
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
 from statsmodels.tsa.statespace.tools import diff
 from statsmodels.tsa.stattools import adfuller
 from statsmodels.graphics.tsaplots import plot_acf
-from statsmodels.tsa.arima import ARIMA
+from statsmodels.tsa.arima.model import ARIMA
 import plotly.express as px
 import pandas as pd
 import os
@@ -38,7 +38,7 @@ def select_ARMA(data):
             order_list_ARMA.append((p,0,q))
 
     # gather results in one df
-    results = pd.DataFrame(data=AIC_list_ARMA, columns=['AIC_ARIMA'])
+    results = pd.DataFrame(data=AIC_list_ARMA, columns=['AIC_ARMA'])
     results['order_ARMA'] = order_list_ARMA
 
     # best ARMA
@@ -69,32 +69,31 @@ def select_ARIMA(data):
                 if _plot_acf:
                     plot_acf(series_new);
 
+    p = 1
+    d = stationarity_check(series=data)
+    q = 1
 
-        p = 1
-        d = stationarity_check(series=data)
-        q = 1
+    # Grid search for optimal p and q values (AR and MA parts)
+    AIC_list_ARIMA = []
+    order_list_ARIMA = []
 
-        # Grid search for optimal p and q values (AR and MA parts)
-        AIC_list_ARIMA = []
-        order_list_ARIMA = []
+    for p in tqdm(np.arange(start=0,stop=6)):
+        for q in np.arange(start=0,stop=6):
 
-        for p in tqdm(np.arange(start=0,stop=6)):
-            for q in np.arange(start=0,stop=6):
+            # for ARIMA models
+            model = ARIMA(data,order=(p,d,q)).fit()
+            AIC_list_ARIMA.append(model.aic)
+            order_list_ARIMA.append((p,d,q))
 
-                # for ARIMA models
-                model = ARIMA(data,order=(p,d,q)).fit()
-                AIC_list_ARIMA.append(model.aic)
-                order_list_ARIMA.append((p,d,q))
+    # gather results in one df
+    results = pd.DataFrame(data=AIC_list_ARIMA, columns=['AIC_ARIMA'])
+    results['order_ARIMA'] = order_list_ARIMA
 
-        # gather results in one df
-        results = pd.DataFrame(data=AIC_list_ARIMA, columns=['AIC_ARIMA'])
-        results['order_ARIMA'] = order_list_ARIMA
+    # best ARIMA
+    ARIMA_params = results.loc[results['AIC_ARIMA']==results['AIC_ARIMA'].min()]['order_ARIMA'].values[0]
+    ARIMA_model = ARIMA(data,order=ARIMA_params).fit()
 
-        # best ARIMA
-        ARIMA_params = results.loc[results['AIC_ARIMA']==results['AIC_ARIMA'].min()]['order_ARIMA'].values[0]
-        ARIMA_model = ARIMA(data,order=ARIMA_params).fit()
-
-        return ARIMA_model
+    return ARIMA_model
 
 
 def train_and_register_model(model_name,dataset,ticker,tracking_uri):
