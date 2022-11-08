@@ -1,21 +1,148 @@
-from statsmodels.tsa.holtwinters import ExponentialSmoothing
-import plotly.express as px
 from .constants import MODELS_FIRST_PART,MODELS_LAST_PART, PREDICTIONS_FIRST_PART, PREDICTIONS_LAST_PART
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from statsmodels.tsa.statespace.tools import diff
+from statsmodels.tsa.stattools import adfuller
+from statsmodels.graphics.tsaplots import plot_acf
+from statsmodels.tsa.arima import ARIMA
+import plotly.express as px
 import pandas as pd
 import os
 import numpy as np
-from statsmodels.tsa.arima.model import ARIMA
-from statsmodels.tsa.statespace.sarimax import SARIMAX
-from sklearn.metrics import mean_absolute_percentage_error, mean_absolute_error
-import plotly.graph_objects as go
-
+from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_absolute_percentage_error
+from sqlalchemy import create_engine
+import mlflow
+from tqdm import tqdm
 import warnings
 warnings.filterwarnings('ignore')
 
-from sqlalchemy import create_engine
 conn_string = os.environ['DB_CONN_STRING']
 engine = create_engine(conn_string)
 conn = engine.connect()
+
+
+def select_ARMA(data):
+
+    p = 1
+    q = 1
+
+    # Grid search for optimal p and q values (AR and MA parts)
+    AIC_list_ARMA = []
+    order_list_ARMA = []
+
+    for p in tqdm(np.arange(start=0,stop=6)):
+        for q in np.arange(start=0,stop=6):
+
+            # for ARMA models
+            model = ARIMA(data,order=(p,0,q)).fit()
+            AIC_list_ARMA.append(model.aic)
+            order_list_ARMA.append((p,0,q))
+
+    # gather results in one df
+    results = pd.DataFrame(data=AIC_list_ARMA, columns=['AIC_ARIMA'])
+    results['order_ARMA'] = order_list_ARMA
+
+    # best ARMA
+    ARMA_params = results.loc[results['AIC_ARMA']==results['AIC_ARMA'].min()]['order_ARMA'].values[0]
+    ARMA_model = ARIMA(data,order=ARMA_params).fit()
+
+    return ARMA_model
+
+
+def select_ARIMA(data):
+
+    def stationarity_check(series,_plot_acf=False):
+        """
+        Checks for series stationarity, and returns the lowest value of differences fow which series is stationary
+        
+        """
+
+        for i in np.arange(start=1,stop=10):
+            series_new = diff(series,k_diff=i)
+            p_value = adfuller(series_new)[1]
+            if p_value < 0.05:
+                if _plot_acf:
+                    print(f'{np.round(p_value,5)}, stationary for {i} differences')
+                    plot_acf(series_new);
+                return i
+
+            else:
+                if _plot_acf:
+                    plot_acf(series_new);
+
+
+        p = 1
+        d = stationarity_check(series=data)
+        q = 1
+
+        # Grid search for optimal p and q values (AR and MA parts)
+        AIC_list_ARIMA = []
+        order_list_ARIMA = []
+
+        for p in tqdm(np.arange(start=0,stop=6)):
+            for q in np.arange(start=0,stop=6):
+
+                # for ARIMA models
+                model = ARIMA(data,order=(p,d,q)).fit()
+                AIC_list_ARIMA.append(model.aic)
+                order_list_ARIMA.append((p,d,q))
+
+        # gather results in one df
+        results = pd.DataFrame(data=AIC_list_ARIMA, columns=['AIC_ARIMA'])
+        results['order_ARIMA'] = order_list_ARIMA
+
+        # best ARIMA
+        ARIMA_params = results.loc[results['AIC_ARIMA']==results['AIC_ARIMA'].min()]['order_ARIMA'].values[0]
+        ARIMA_model = ARIMA(data,order=ARIMA_params).fit()
+
+        return ARIMA_model
+
+
+def train_and_register_model(model_name,dataset,ticker,tracking_uri):
+
+    def eval_metrics(actual, pred):
+        rmse = np.round(np.sqrt(mean_squared_error(actual, pred)),2)
+        mae = np.round(mean_absolute_error(actual, pred),2)
+        mape = np.round(mean_absolute_percentage_error(actual, pred)*100,2)
+        return rmse, mae, mape
+
+    if 'Holt' in model_name:
+        try:
+            model = ExponentialSmoothing(dataset,trend='mul',seasonal='mul',seasonal_periods=12).fit()
+            preds = model.fittedvalues
+        except Exception:
+            return 1
+
+    if 'ARMA' in model_name:
+        try:
+            model = select_ARMA(data=dataset)
+            preds = model.fittedvalues
+        except Exception:
+            return 1
+    
+    if 'ARIMA' in model_name:
+        try:
+            model = select_ARIMA(data=dataset)
+            preds = model.fittedvalues
+        except Exception:
+            return 1
+
+    # Setting up mlflow connection
+    mlflow.set_tracking_uri(tracking_uri)
+
+    # Setting experiment
+    experiment = mlflow.set_experiment(ticker)
+  
+    with mlflow.start_run(experiment_id=experiment.experiment_id,run_name=model_name):
+    
+        rmse, mae, mape = eval_metrics(dataset,preds)
+        
+        mlflow.log_param("RMSE", rmse)
+        mlflow.log_param("MAE", mae)
+        mlflow.log_param("MAPE", mape)
+         
+        # Logging model
+        mlflow.statsmodels.log_model(model, "model", registered_model_name=f'{model_name}_{ticker}')
+        print('model logged for',f'{model_name}_{ticker}')
 
 
 def fit_and_plot(ticker,model_name,plot_last_mnths,conn,data_type='plot'):
