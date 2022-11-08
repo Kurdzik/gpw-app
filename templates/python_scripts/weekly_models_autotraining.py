@@ -4,7 +4,7 @@ import sqlalchemy
 import warnings
 import pandas as pd 
 from tqdm import tqdm
-from .models import train_and_register_model
+from models import train_and_register_model
 warnings.filterwarnings('ignore')
 
 conn_string = os.environ['DB_CONN_STRING']
