@@ -134,7 +134,7 @@ p {
   background-color: #ffffff17;
 }
 @media (max-width: 450px) {
-  .dataframe > tbody > tr:nth-of-type(odd) {
+  .dataframe > tbody > tr {
     font-size: small;
   }
 }
