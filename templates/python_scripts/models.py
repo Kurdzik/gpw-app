@@ -185,10 +185,9 @@ def fit_and_plot(ticker,model_name,plot_last_mnths,conn,data_type='plot'):
     if 'ARIMA' in model_name:
         model_version = f'ARIMA_{ticker}/1'
 
-    model = mlflow.pyfunc.load_model(f'models:/{model_version}')
+    model = mlflow.statsmodels.load_model(f'models:/{model_version}')
     
     fitted_data = model.fittedvalues
-
 
     # GRAPHS
     # ======================================================================================================================
@@ -277,7 +276,7 @@ def predict_and_plot(ticker,model_name,fcst_period,plot_last_mnths,conn,data_typ
     if 'ARIMA' in model_name:
         model_version = f'ARIMA_{ticker}/1'
 
-    model = mlflow.pyfunc.load_model(f'models:/{model_version}')
+    model = mlflow.statsmodels.load_model(f'models:/{model_version}')
     
     # Get index for forcated values - only Business Days, no weekends
     fcsted_index = pd.date_range(start=model.fittedvalues.index[-1],freq='B',periods=fcst_period)
