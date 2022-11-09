@@ -15,6 +15,7 @@ from tqdm import tqdm
 import warnings
 warnings.filterwarnings('ignore')
 
+tracking_uri = os.environ['MLFLOW_TRACKING_URI']
 conn_string = os.environ['DB_CONN_STRING']
 engine = create_engine(conn_string)
 conn = engine.connect()
@@ -165,14 +166,27 @@ def fit_and_plot(ticker,model_name,plot_last_mnths,conn,data_type='plot'):
     plot_data_since = pd.date_range(end=df.index.max(),periods=plot_last_mnths,freq='M')[0].date()
 
 
+    mlflow.set_tracking_uri(tracking_uri)
+
     # MODEL SELECTION
     # ======================================================================================================================
     # MODEL 1 - Holt Winters - Exponential Smoothing
     if 'Holt' in model_name:
-        model = ExponentialSmoothing(dataset,trend='mul',seasonal='mul',seasonal_periods=12).fit()
+        model_version = f'Holt-Winters_{ticker}/1'
+    
+    # ======================================================================================================================
+    # MODEL 2 - ARMA
+    if 'ARMA' in model_name:
+        model_version = f'ARMA_{ticker}/1'
 
+    # ======================================================================================================================
+    # MODEL 3 - ARIMA
+    if 'ARIMA' in model_name:
+        model_version = f'ARIMA_{ticker}/1'
 
-    fitted_data = model.fittedvalues
+    model = mlflow.pyfunc.load_model(f'models:/{model_version}')
+
+    fitted_data = model.predict(0)
 
 
     # GRAPHS
@@ -245,19 +259,32 @@ def predict_and_plot(ticker,model_name,fcst_period,plot_last_mnths,conn,data_typ
     plot_data_since = pd.date_range(end=df.index.max(),periods=plot_last_mnths,freq='M')[0].date()
 
 
+    mlflow.set_tracking_uri(tracking_uri)
+
     # MODEL SELECTION
     # ======================================================================================================================
     # MODEL 1 - Holt Winters - Exponential Smoothing
-
     if 'Holt' in model_name:
-        model = ExponentialSmoothing(dataset,trend='mul',seasonal='mul',seasonal_periods=12).fit()
+        model_version = f'Holt-Winters_{ticker}/1'
+    
+    # ======================================================================================================================
+    # MODEL 2 - ARMA
+    if 'ARMA' in model_name:
+        model_version = f'ARMA_{ticker}/1'
 
+    # ======================================================================================================================
+    # MODEL 3 - ARIMA
+    if 'ARIMA' in model_name:
+        model_version = f'ARIMA_{ticker}/1'
+
+
+    model = mlflow.pyfunc.load_model(f'models:/{model_version}')
 
     # Get index for forcated values - only Business Days, no weekends
-    fcsted_index = pd.date_range(start=model.fittedvalues.index[-1],freq='B',periods=fcst_period)
+    fcsted_index = pd.date_range(start=model.predict(0).index[-1],freq='B',periods=fcst_period)
 
     # Get forcasted values 
-    fcsted_vals = model.forecast(fcst_period).to_frame().set_index(fcsted_index).rename({0:'Close','predicted_mean':'Close'},axis=1)
+    fcsted_vals = model.predict(fcst_period).to_frame().set_index(fcsted_index).rename({0:'Close','predicted_mean':'Close'},axis=1)
 
     # Merge historical and forecasted values into one data frame
     hist_data = dataset.to_frame()
