@@ -1,4 +1,4 @@
-from constants import MODELS_FIRST_PART,MODELS_LAST_PART, PREDICTIONS_FIRST_PART, PREDICTIONS_LAST_PART
+from .constants import MODELS_FIRST_PART,MODELS_LAST_PART, PREDICTIONS_FIRST_PART, PREDICTIONS_LAST_PART
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
 from statsmodels.tsa.statespace.tools import diff
 from statsmodels.tsa.stattools import adfuller
