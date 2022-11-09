@@ -140,7 +140,7 @@ def train_and_register_model(model_name,dataset,ticker,tracking_uri):
         mlflow.log_param("MAPE", mape)
          
         # Logging model
-        mlflow.statsmodels.log_model(model, "model", registered_model_name=f'{model_name}_{ticker}')
+        mlflow.sklearn.log_model(model, "model", registered_model_name=f'{model_name}_{ticker}')
         print('model logged for',f'{model_name}_{ticker}')
 
 
