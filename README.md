@@ -28,6 +28,10 @@ Main purpose of this project is to:
 
 - Holt-Winters Exponential Smoothing model  
 
+- ARIMA
+
+- SARIMA
+
 <br>
 <hr>
 <h3>  CI CD </h3>

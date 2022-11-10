@@ -236,6 +236,76 @@ def fit_and_plot(ticker,model_name,plot_last_mnths,conn,data_type='plot'):
 
         return fig_1.show() + metrics
 
+def fit_and_plot_all(ticker,plot_last_mnths,conn,data_type='plot'):
+    
+    q = f'''
+    SELECT "Close","Date"
+    FROM gpw.notowania
+    where "Ticker" = '{ticker}'
+    order by to_date("Date",'dd-mm-yyyy'); '''
+
+    registered_models = ['ARMA','ARIMA','Holt-Winters']
+    
+    # Get Data
+    actuals = pd.read_sql(q,conn)
+    
+    # Preprocess
+    actuals['Date'] = pd.to_datetime(actuals['Date'],dayfirst=True)
+    actuals = actuals.set_index('Date')
+    actuals['Close'] = actuals['Close'].astype(float)
+    dataset = actuals['Close']
+
+    # Dataset parameters
+    plot_data_since = pd.date_range(end=actuals.index.max(),periods=plot_last_mnths,freq='M')[0].date()
+
+    df = pd.DataFrame()
+    
+    mlflow.set_tracking_uri(tracking_uri)
+
+    for mod in tqdm(registered_models):
+        model = mlflow.statsmodels.load_model(f'models:/{mod}_{ticker}/1')
+        print(mod,'loaded')
+        df[f'{mod}_preds'] = model.fittedvalues
+        print(mod,'fitted')
+
+    df['Actual'] = actuals['Close'].values
+
+    # instantiate fig object
+    fig = px.line()
+
+    for col in df.columns:
+
+        # loop through registered models
+        fig.add_scatter(x=df.index, y=df[col], mode='lines',name=col)
+
+
+    fig.update_layout(
+        title='Model comparison',
+        xaxis_title="Date",
+        yaxis_title="Price in PLN"
+    )
+
+
+    metrics = dict()
+
+    for mod in registered_models:
+
+        metrics[mod] = [np.round(mean_absolute_error(df['Actual'],df[f'{mod}_preds']),4),
+                        np.round(mean_absolute_percentage_error(df['Actual'],df[f'{mod}_preds']),4)]
+
+    metrics = pd.DataFrame(metrics,index=['MAE','MAPE'])
+
+    metrics_html = metrics.to_html(index=False,justify='justify-all',col_space=250) + '<br>' + '<hr>'
+
+
+    if data_type == 'html':
+        full_html = MODELS_FIRST_PART + metrics_html + fig.to_html()[55:-15] + '<hr>' +  MODELS_LAST_PART
+
+        return full_html
+
+    elif data_type == 'plot':
+
+        return fig.show() + metrics
 
 
 def predict_and_plot(ticker,model_name,fcst_period,plot_last_mnths,conn,data_type):
