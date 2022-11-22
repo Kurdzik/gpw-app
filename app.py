@@ -1,7 +1,7 @@
 from flask import Flask,render_template, request
 from templates.python_scripts.db_functions import get_data_from_db, test_db_conn
 from templates.python_scripts.dashboards_functions import get_and_plot_data
-from templates.python_scripts.models import fit_and_plot, predict_and_plot
+from templates.python_scripts.models import load_model_and_plot, predict_and_plot
 from templates.python_scripts.constants import MODELS_FIRST_PART,MODELS_LAST_PART,PREDICTIONS_FIRST_PART,PREDICTIONS_LAST_PART
 import pandas as pd
 import sqlalchemy
@@ -219,7 +219,7 @@ def run_model():
     model = request.form['ModelSelection']
 
     try:
-        html_div = fit_and_plot(
+        html_div = load_model_and_plot(
                                 ticker = ticker,
                                 model_name = model,
                                 plot_last_mnths = plot_last_mnths,

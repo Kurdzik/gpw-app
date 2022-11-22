@@ -16,11 +16,9 @@ import warnings
 warnings.filterwarnings('ignore')
 
 tracking_uri = os.environ['MLFLOW_TRACKING_URI']
-
 conn_string = os.environ['DB_CONN_STRING']
 engine = create_engine(conn_string)
 conn = engine.connect()
-
 
 def select_ARMA(data):
 
@@ -48,7 +46,6 @@ def select_ARMA(data):
     ARMA_model = ARIMA(data,order=ARMA_params).fit()
 
     return ARMA_model
-
 
 def select_ARIMA(data):
 
@@ -97,7 +94,6 @@ def select_ARIMA(data):
 
     return ARIMA_model
 
-
 def train_and_register_model(model_name,dataset,ticker,tracking_uri):
 
     def eval_metrics(actual, pred):
@@ -145,8 +141,7 @@ def train_and_register_model(model_name,dataset,ticker,tracking_uri):
         mlflow.sklearn.log_model(model, "model", registered_model_name=f'{model_name}_{ticker}')
         print('model logged for',f'{model_name}_{ticker}')
 
-
-def fit_and_plot(ticker,model_name,plot_last_mnths,conn,data_type='plot'):
+def load_model_and_plot(ticker,model_name,plot_last_mnths,conn,data_type='plot'):
 
     q = f'''
     SELECT "Close","Date"
@@ -165,7 +160,6 @@ def fit_and_plot(ticker,model_name,plot_last_mnths,conn,data_type='plot'):
 
     # Dataset parameters
     plot_data_since = pd.date_range(end=df.index.max(),periods=plot_last_mnths,freq='M')[0].date()
-
 
     mlflow.set_tracking_uri(tracking_uri)
 
@@ -187,13 +181,13 @@ def fit_and_plot(ticker,model_name,plot_last_mnths,conn,data_type='plot'):
 
     model = mlflow.statsmodels.load_model(f'models:/{model_version}')
     
-    fitted_data = model.fittedvalues
+    fitted_data = model.forecast(0)
 
     # GRAPHS
     # ======================================================================================================================
     # Join data 
     joint_data = pd.concat([   
-                            fitted_data.to_frame().rename({0:'Predictions'},axis=1),
+                            fitted_data.to_frame().rename({0:'Predictions','predicted_mean':'Predictions'},axis=1),
                             dataset.to_frame().rename({'Close':'True Value'},axis=1)
                             ],axis=1)
 
@@ -235,8 +229,6 @@ def fit_and_plot(ticker,model_name,plot_last_mnths,conn,data_type='plot'):
     elif data_type == 'plot':
 
         return fig_1.show() + metrics
-
-
 
 def predict_and_plot(ticker,model_name,fcst_period,plot_last_mnths,conn,data_type):
 
