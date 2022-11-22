@@ -259,7 +259,8 @@ def predict():
                                     data_type = 'html')
 
     except Exception as e:
-        html_div = PREDICTIONS_FIRST_PART + 'Unexpected error occured, please try again later' + PREDICTIONS_LAST_PART
+        # html_div = PREDICTIONS_FIRST_PART + 'Unexpected error occured, please try again later' + PREDICTIONS_LAST_PART
+        html_div = PREDICTIONS_FIRST_PART + e + PREDICTIONS_LAST_PART
 
 
     with open(f'templates/rendered_predictions/predictions_future_temp_{ticker}.html','w') as file:

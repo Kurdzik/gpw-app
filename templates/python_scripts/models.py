@@ -234,7 +234,7 @@ def load_model_and_plot(ticker,model_name,plot_last_mnths,conn,data_type='plot')
 
     elif data_type == 'plot':
 
-        return fig_1.show() + metrics
+        return fig_1.show(), metrics
 
 def predict_and_plot(ticker,model_name,fcst_period,plot_last_mnths,conn,data_type):
 
@@ -307,7 +307,7 @@ def predict_and_plot(ticker,model_name,fcst_period,plot_last_mnths,conn,data_typ
         xaxis_title="Date",
         yaxis_title="Price in PLN"
     )
-
+    
     if data_type == 'html':
         full_html = PREDICTIONS_FIRST_PART + fig.to_html()[55:-15] +  PREDICTIONS_LAST_PART
         
