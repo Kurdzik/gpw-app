@@ -12,6 +12,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_absolu
 from sqlalchemy import create_engine
 import mlflow
 from tqdm import tqdm
+from datetime import date
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -180,9 +181,14 @@ def load_model_and_plot(ticker,model_name,plot_last_mnths,conn,data_type='plot')
         model_version = f'ARIMA_{ticker}/1'
 
     model = mlflow.statsmodels.load_model(f'models:/{model_version}')
-    
-    fitted_data = model.forecast(0)
 
+    # Get fitted values from the model    
+    fitted_data = model.fittedvalues
+
+    # Get last date from fittedvalues and trim dataset to that date in order to plot and evaluate it
+    last_date = fitted_data.tail(1).index.date[0]
+    dataset = dataset[:last_date]
+    
     # GRAPHS
     # ======================================================================================================================
     # Join data 
@@ -269,6 +275,15 @@ def predict_and_plot(ticker,model_name,fcst_period,plot_last_mnths,conn,data_typ
         model_version = f'ARIMA_{ticker}/1'
 
     model = mlflow.statsmodels.load_model(f'models:/{model_version}')
+
+
+    # Offset forecast period by the days that already passed between model training nad actual date
+    now = str(date.today())
+    last_day_known_to_model = str(model.fittedvalues.tail(1).index.date[0])
+
+    forceast_offset = len(pd.date_range(start=last_day_known_to_model,end=now,freq='M')) + 1
+
+    fcst_period += forceast_offset
     
     # Get index for forcated values - only Business Days, no weekends
     fcsted_index = pd.date_range(start=model.fittedvalues.index[-1],freq='B',periods=fcst_period)
