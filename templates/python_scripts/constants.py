@@ -127,7 +127,7 @@ DASHBOARDS_LAST_PART = """       <footer class="mt-auto text-white-50">
   </body>
 </html>"""
 
-MODELS_FIRST_PART ='''<!DOCTYPE html>
+MODELS_FIRST_PART = """<!DOCTYPE html>
 <html lang="en" class="h-100">
   <head>
     <meta charset="UTF-8" />
@@ -330,9 +330,9 @@ MODELS_FIRST_PART ='''<!DOCTYPE html>
             value="Check model performance"
           />
         </form>
-        <hr>'''
+        <hr>"""
 
-MODELS_LAST_PART = '''      </main>
+MODELS_LAST_PART = """      </main>
       <footer class="mt-auto text-white-50">
         <p>
           Created by
@@ -362,9 +362,9 @@ MODELS_LAST_PART = '''      </main>
     <script src="static/scripts/dropdown_tickers_preds.js"></script>
     <script src="static/scripts/dropdown_models.js"></script>
   </body>
-</html>'''
+</html>"""
 
-PREDICTIONS_FIRST_PART = ''' <!DOCTYPE html>
+PREDICTIONS_FIRST_PART = """ <!DOCTYPE html>
 <html lang="en" class="h-100">
   <head>
     <meta charset="UTF-8" />
@@ -507,9 +507,9 @@ PREDICTIONS_FIRST_PART = ''' <!DOCTYPE html>
             value="Make Predictions"
           />
         </form>
-        <hr>'''
+        <hr>"""
 
-PREDICTIONS_LAST_PART = '''       </main>
+PREDICTIONS_LAST_PART = """       </main>
       <footer class="mt-auto text-white-50">
         <p>
           Created by
@@ -539,4 +539,4 @@ PREDICTIONS_LAST_PART = '''       </main>
     <script src="static/scripts/dropdown_tickers_preds.js"></script>
     <script src="static/scripts/dropdown_models.js"></script>
   </body>
-</html>'''
+</html>"""
