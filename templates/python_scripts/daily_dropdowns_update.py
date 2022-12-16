@@ -1,7 +1,8 @@
-import sqlalchemy
-import pandas as pd
-import shutil
 import os
+import shutil
+
+import pandas as pd
+import sqlalchemy
 
 conn_string = os.environ["DB_CONN_STRING"]
 

@@ -1,14 +1,13 @@
-from unittest import removeResult
-from bs4 import BeautifulSoup
-import pandas as pd
-import requests
-import time
 import datetime as d
 import re
-import numpy as np
-import unidecode
 import time
+from unittest import removeResult
+
+import numpy as np
+import pandas as pd
 import requests
+import unidecode
+from bs4 import BeautifulSoup
 
 
 def get_stock_prices(date_from, date_to, ticker="ALL", show_progress=True, wait=0.5):

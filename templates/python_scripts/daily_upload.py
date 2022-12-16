@@ -1,8 +1,9 @@
-from gpw_functions import get_stock_prices
-from datetime import date
-import pandas as pd
-from sqlalchemy import create_engine
 import os
+from datetime import date
+
+import pandas as pd
+from gpw_functions import get_stock_prices
+from sqlalchemy import create_engine
 
 conn_string = os.environ["DB_CONN_STRING"]
 engine = create_engine(conn_string)

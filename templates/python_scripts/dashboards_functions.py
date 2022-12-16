@@ -1,17 +1,16 @@
-from plotly.subplots import make_subplots
-import time
-import tqdm
-import numpy as np
-from .gpw_functions import map_financial_data
-import unidecode
-import plotly.express as px
-from sqlalchemy import create_engine
-import pandas as pd
 import os
-from .constants import DASHBOARDS_FIRST_PART, DASHBOARDS_LAST_PART
+import time
 
-
+import numpy as np
+import pandas as pd
+import plotly.express as px
+import tqdm
+import unidecode
+from plotly.subplots import make_subplots
 from sqlalchemy import create_engine
+
+from .constants import DASHBOARDS_FIRST_PART, DASHBOARDS_LAST_PART
+from .gpw_functions import map_financial_data
 
 conn_string = os.environ["DB_CONN_STRING"]
 engine = create_engine(conn_string)

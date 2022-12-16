@@ -1,10 +1,10 @@
-import sqlalchemy
 import os
-import sqlalchemy
 import warnings
+
 import pandas as pd
-from tqdm import tqdm
+import sqlalchemy
 from models import train_and_register_model
+from tqdm import tqdm
 
 warnings.filterwarnings("ignore")
 
