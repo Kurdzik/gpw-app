@@ -30,7 +30,7 @@ Main purpose of this project is to:
 
 - ARIMA
 
-- SARIMA
+- ARMA
 
 <br>
 <hr>
