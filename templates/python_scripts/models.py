@@ -28,10 +28,9 @@ from .constants import (
 
 warnings.filterwarnings("ignore")
 
-# tracking_uri = os.environ['MLFLOW_TRACKING_URI']
-tracking_uri = "http://192.168.88.213:5001"
-# conn_string = os.environ['DB_CONN_STRING']
-conn_string = "postgresql://postgres:NFGwCwRrGk@mws02.mikr.us:40406/postgres"
+tracking_uri = os.environ['MLFLOW_TRACKING_URI']
+conn_string = os.environ['DB_CONN_STRING']
+
 engine = create_engine(conn_string)
 conn = engine.connect()
 
